@@ -1,0 +1,177 @@
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 60px;
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 60px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition-normal);
+
+  :host ::ng-deep .custom-menubar {
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    height: 60px;
+    padding: 0 1.5rem;
+    
+    .p-menubar-start,
+    .p-menubar-end {
+      align-items: center;
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      
+      .sidebar-toggle {
+        width: 40px;
+        height: 40px;
+        border-radius: var(--border-radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--background-tertiary);
+        border: none;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: all var(--transition-fast);
+
+        &:hover {
+          background: var(--primary-color);
+          color: white;
+          transform: scale(1.05);
+        }
+
+        i {
+          font-size: 1.1rem;
+        }
+      }
+      
+      .brand-icon {
+        font-size: 1.75rem;
+        color: var(--primary-color);
+        animation: pulse 2s infinite;
+      }
+      
+      .brand-text {
+        font-size: 1.4rem;
+        font-weight: 700;
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        white-space: nowrap;
+      }
+    }
+    
+    .p-menubar-root-list {
+      gap: 0.5rem;
+      
+      .p-menuitem {
+        .p-menuitem-link {
+          padding: 0.75rem 1rem;
+          border-radius: var(--border-radius);
+          color: var(--text-secondary);
+          font-weight: 500;
+          font-family: 'Inter', sans-serif;
+          transition: all var(--transition-fast);
+          border: 2px solid transparent;
+
+          &:hover {
+            background: var(--background-tertiary);
+            color: var(--primary-color);
+            transform: translateY(-1px);
+          }
+
+          &:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+          }
+          
+          .p-menuitem-icon {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+          }
+          
+          .p-menuitem-text {
+            font-size: 0.95rem;
+          }
+        }
+      }
+    }
+
+    .user-section {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .user-avatar {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
+        color: white;
+        cursor: pointer;
+        transition: all var(--transition-fast);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.9rem;
+        
+        &:hover {
+          transform: scale(1.1);
+          box-shadow: var(--shadow-md);
+        }
+      }
+    }
+  }
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .header {
+    :host ::ng-deep .custom-menubar {
+      padding: 0 1rem;
+      
+      .brand-section {
+        .brand-text {
+          font-size: 1.2rem;
+        }
+      }
+      
+      .p-menubar-root-list {
+        .p-menuitem {
+          .p-menuitem-link {
+            padding: 0.5rem 0.75rem;
+            
+            .p-menuitem-text {
+              font-size: 0.875rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+<p-menubar [model]="items" styleClass="custom-menubar">
+  <ng-template pTemplate="start">
+    <div class="brand-section">
+      <p-button icon="pi pi-bars" 
+                styleClass="p-button-text sidebar-toggle"
+                (onClick)="toggleSidebar()"
+                pTooltip="Toggle Menu"
+                tooltipPosition="bottom">
+      </p-button>
+      <i class="pi pi-graduation-cap brand-icon"></i>
+      <span class="brand-text">Quản lý giáo dục</span>
+    </div>
+  </ng-template>
+  <ng-template pTemplate="end">
+    <div class="user-section">
+      <p-avatar icon="pi pi-user" 
+                styleClass="user-avatar" 
+                size="normal" 
+                shape="circle">
+      </p-avatar>
+    </div>
+  </ng-template>
+</p-menubar>

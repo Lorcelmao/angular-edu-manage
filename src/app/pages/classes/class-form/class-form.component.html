@@ -1,0 +1,93 @@
+<div class="class-form">
+  <div class="header-section">
+    <h2>{{ pageTitle }}</h2>
+    <p-button icon="pi pi-arrow-left" 
+              label="Quay lại" 
+              styleClass="p-button-text"
+              (onClick)="goBack()">
+    </p-button>
+  </div>
+
+  <p-card>
+    <form [formGroup]="classForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="name">Tên lớp học <span class="required">*</span></label>
+          <input type="text" 
+                 id="name"
+                 pInputText 
+                 formControlName="name"
+                 placeholder="Nhập tên lớp học"
+                 [class.ng-invalid]="isFieldInvalid('name')">
+          <small class="p-error" *ngIf="isFieldInvalid('name')">
+            {{ getFieldError('name') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="grade">Khối lớp <span class="required">*</span></label>
+          <p-dropdown id="grade"
+                      [options]="grades"
+                      formControlName="grade"
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Chọn khối lớp"
+                      [class.ng-invalid]="isFieldInvalid('grade')">
+          </p-dropdown>
+          <small class="p-error" *ngIf="isFieldInvalid('grade')">
+            {{ getFieldError('grade') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="schoolCode">Trường học <span class="required">*</span></label>
+          <p-dropdown id="schoolCode"
+                      [options]="schools"
+                      formControlName="schoolCode"
+                      optionLabel="schoolName"
+                      optionValue="schoolCode"
+                      placeholder="Chọn trường học"
+                      [class.ng-invalid]="isFieldInvalid('schoolCode')">
+          </p-dropdown>
+          <small class="p-error" *ngIf="isFieldInvalid('schoolCode')">
+            {{ getFieldError('schoolCode') }}
+          </small>
+        </div>
+
+        <div class="form-field" *ngIf="isEditMode">
+          <label for="classCode">Mã lớp</label>
+          <input type="text" 
+                 id="classCode"
+                 pInputText 
+                 formControlName="classCode"
+                 placeholder="Mã lớp học">
+          <small class="field-help">Mã lớp được tạo tự động khi thêm mới</small>
+        </div>
+
+        <div class="form-field" *ngIf="isViewMode">
+          <label for="classCodeView">Mã lớp</label>
+          <input type="text" 
+                 id="classCodeView"
+                 pInputText 
+                 formControlName="classCode"
+                 readonly>
+        </div>
+      </div>
+
+      <div class="form-actions" *ngIf="!isViewMode">
+        <p-button type="button" 
+                  label="Hủy" 
+                  styleClass="p-button-text"
+                  (onClick)="goBack()">
+        </p-button>
+        <p-button type="submit" 
+                  [label]="isEditMode ? 'Cập nhật' : 'Thêm mới'"
+                  [loading]="loading"
+                  styleClass="p-button-success">
+        </p-button>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<!-- <p-toast></p-toast> -->

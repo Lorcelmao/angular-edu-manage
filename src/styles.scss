@@ -1,1 +1,666 @@
 /* You can add global styles to this file, and also import other style files */
+@import "primeng/resources/themes/lara-light-blue/theme.css";
+@import "primeng/resources/primeng.css";
+@import "primeicons/primeicons.css";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+// Custom CSS Variables
+:root {
+  --primary-color: #6366f1;
+  --primary-light: #8b5cf6;
+  --primary-dark: #4f46e5;
+  --secondary-color: #64748b;
+  --success-color: #10b981;
+  --warning-color: #f59e0b;
+  --error-color: #ef4444;
+  --info-color: #06b6d4;
+  
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  
+  --background-primary: #ffffff;
+  --background-secondary: #f8fafc;
+  --background-tertiary: #f1f5f9;
+  
+  --border-color: #e2e8f0;
+  --border-radius: 12px;
+  --border-radius-lg: 16px;
+  --border-radius-xl: 20px;
+  
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+  
+  --transition-fast: 0.15s ease-out;
+  --transition-normal: 0.25s ease-out;
+  --transition-slow: 0.35s ease-out;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--text-primary);
+  background-color: var(--background-secondary);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+  color: var(--text-primary);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.required {
+  color: var(--error-color);
+  font-weight: 500;
+}
+
+// Animation keyframes
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+// Animation classes
+.animate-slide-up {
+  animation: slideInUp 0.4s ease-out forwards;
+}
+
+.animate-slide-right {
+  animation: slideInRight 0.4s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.3s ease-out forwards;
+}
+
+// Staggered animations
+.animate-stagger {
+  &:nth-child(1) { animation-delay: 0.1s; }
+  &:nth-child(2) { animation-delay: 0.2s; }
+  &:nth-child(3) { animation-delay: 0.3s; }
+  &:nth-child(4) { animation-delay: 0.4s; }
+  &:nth-child(5) { animation-delay: 0.5s; }
+}
+
+// Layout wrapper
+.layout-wrapper {
+  min-height: 100vh;
+
+  .layout-main {
+    display: flex;
+    margin-top: 60px;
+
+    .layout-content {
+      flex: 1;
+      margin-left: 250px;
+      transition: margin-left var(--transition-normal);
+
+      &.sidebar-collapsed {
+        margin-left: 0;
+      }
+
+      .content-wrapper {
+        padding: 2rem;
+        min-height: calc(100vh - 60px);
+        background: linear-gradient(135deg, var(--background-secondary) 0%, #e0f2fe 100%);
+      }
+    }
+  }
+}
+
+// Custom scrollbar
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-tertiary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
+  
+  &:hover {
+    background: var(--text-muted);
+  }
+}
+
+// Responsive typography
+@media (max-width: 768px) {
+  body {
+    font-size: 14px;
+  }
+  
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+  h4 { font-size: 1.125rem; }
+  h5 { font-size: 1rem; }
+  h6 { font-size: 0.875rem; }
+}
+
+// PrimeNG component overrides
+:host ::ng-deep {
+  .p-card {
+    border: none;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+    transition: all var(--transition-normal);
+    background: var(--background-primary);
+    
+    &:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-2px);
+    }
+    
+    .p-card-header {
+      background: var(--background-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.5rem;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+    
+    .p-card-body {
+      padding: 1.5rem;
+    }
+  }
+  
+  .p-button {
+    border-radius: var(--border-radius);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+    font-family: 'Inter', sans-serif;
+    
+    &.p-button-success {
+      background: var(--success-color);
+      border-color: var(--success-color);
+      
+      &:hover {
+        background: #059669;
+        border-color: #059669;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+    
+    &.p-button-warning {
+      background: var(--warning-color);
+      border-color: var(--warning-color);
+      
+      &:hover {
+        background: #d97706;
+        border-color: #d97706;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+    
+    &.p-button-danger {
+      background: var(--error-color);
+      border-color: var(--error-color);
+      
+      &:hover {
+        background: #dc2626;
+        border-color: #dc2626;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+    
+    &.p-button-info {
+      background: var(--info-color);
+      border-color: var(--info-color);
+      
+      &:hover {
+        background: #0891b2;
+        border-color: #0891b2;
+        transform: translateY(-1px);
+        box-shadow: var(--shadow-md);
+      }
+    }
+  }
+  
+  .p-inputtext,
+  .p-dropdown,
+  .p-calendar {
+    border-radius: var(--border-radius);
+    border: 2px solid var(--border-color);
+    transition: all var(--transition-fast);
+    font-family: 'Inter', sans-serif;
+    
+    &:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+  }
+  
+  .p-table {
+    border-radius: var(--border-radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-md);
+    
+    .p-datatable-header {
+      background: var(--background-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 1.5rem;
+    }
+    
+    .p-datatable-thead > tr > th {
+      background: var(--background-tertiary);
+      color: var(--text-primary);
+      font-weight: 600;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      padding: 1rem;
+      border: none;
+    }
+    
+    .p-datatable-tbody > tr {
+      transition: all var(--transition-fast);
+      
+      &:hover {
+        background: var(--background-tertiary);
+      }
+      
+      > td {
+        padding: 1rem;
+        border: none;
+        border-bottom: 1px solid var(--border-color);
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 1200px) {
+  .layout-wrapper .layout-main .layout-content {
+    margin-left: 0;
+    
+    .content-wrapper {
+      padding: 1.5rem;
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .layout-wrapper .layout-main .layout-content .content-wrapper {
+    padding: 1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .layout-wrapper .layout-main .layout-content .content-wrapper {
+    padding: 0.75rem;
+  }
+}
+
+* {
+  transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
+              margin 0.3s cubic-bezier(0.4, 0.0, 0.2, 1),
+              opacity 0.2s ease;
+}
+
+:host {
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 60px;
+}
+
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  
+  .sidebar-toggle {
+    margin-right: 0.5rem;
+    
+    &:hover {
+      background-color: #f8f9fa !important;
+      color: #007bff !important;
+    }
+  }
+  
+  .brand-icon {
+    font-size: 1.5rem;
+    color: #007bff;
+  }
+  
+  .brand-text {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #495057;
+    white-space: nowrap;
+  }
+}
+
+.user-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+:host ::ng-deep {
+  .custom-menubar {
+    border: none;
+    border-radius: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #e9ecef;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    height: 60px;
+    padding: 0 1.5rem;
+    
+    .p-menubar-start,
+    .p-menubar-end {
+      align-items: center;
+    }
+    
+    .p-menubar-root-list {
+      gap: 0.5rem;
+      
+      .p-menuitem {
+        .p-menuitem-link {
+          padding: 0.75rem 1rem;
+          border-radius: 6px;
+          color: #495057 !important;
+          font-weight: 500;
+          transition: all 0.2s ease;
+          background: transparent !important;
+          
+          &:hover {
+            background-color: #f8f9fa !important;
+            color: #007bff !important;
+          }
+          
+          &:focus {
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25) !important;
+            outline: none;
+            background-color: #f8f9fa !important;
+            color: #007bff !important;
+          }
+          
+          .p-menuitem-icon {
+            margin-right: 0.5rem;
+            font-size: 1rem;
+            color: inherit;
+          }
+          
+          .p-menuitem-text {
+            font-size: 0.9rem;
+            color: inherit;
+          }
+        }
+        
+        // Override tất cả các trạng thái active
+        &.p-menuitem-active,
+        &.p-focus,
+        &.p-highlight {
+          .p-menuitem-link {
+            background: transparent !important;
+            color: #495057 !important;
+            
+            &:hover {
+              background-color: #f8f9fa !important;
+              color: #007bff !important;
+            }
+            
+            &:focus {
+              background-color: #f8f9fa !important;
+              color: #007bff !important;
+            }
+          }
+        }
+      }
+    }
+    
+    .p-submenu-list {
+      background: white !important;
+      border: 1px solid #e9ecef;
+      border-radius: 6px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      padding: 0.5rem 0;
+      min-width: 200px;
+      margin-top: 0.25rem;
+      
+      .p-menuitem {
+        .p-menuitem-link {
+          padding: 0.75rem 1rem;
+          color: #495057 !important;
+          background: transparent !important;
+          border-radius: 0;
+          
+          &:hover {
+            background-color: #f8f9fa !important;
+            color: #007bff !important;
+          }
+          
+          &:focus {
+            background-color: #f8f9fa !important;
+            color: #007bff !important;
+            outline: none;
+          }
+          
+          .p-menuitem-icon {
+            margin-right: 0.75rem;
+            color: #6c757d;
+          }
+          
+          .p-menuitem-text {
+            color: inherit;
+          }
+        }
+        
+        // Override submenu active states
+        &.p-menuitem-active,
+        &.p-focus,
+        &.p-highlight {
+          .p-menuitem-link {
+            background: transparent !important;
+            color: #495057 !important;
+            
+            &:hover {
+              background-color: #f8f9fa !important;
+              color: #007bff !important;
+            }
+            
+            &:focus {
+              background-color: #f8f9fa !important;
+              color: #007bff !important;
+            }
+            
+            .p-menuitem-icon {
+              color: #6c757d;
+            }
+          }
+        }
+      }
+    }
+    
+    .user-avatar {
+      background-color: #007bff !important;
+      color: white !important;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      
+      &:hover {
+        background-color: #0056b3 !important;
+        transform: scale(1.05);
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .brand-section {
+    .brand-text {
+      font-size: 1rem;
+    }
+  }
+  
+  :host ::ng-deep {
+    .custom-menubar {
+      padding: 0 1rem;
+      
+      .p-menubar-root-list {
+        .p-menuitem {
+          .p-menuitem-link {
+            padding: 0.5rem 0.75rem;
+            
+            .p-menuitem-text {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+      
+      .p-submenu-list {
+        min-width: 160px;
+        
+        .p-menuitem {
+          .p-menuitem-link {
+            padding: 0.5rem 0.75rem;
+            
+            .p-menuitem-text {
+              font-size: 0.85rem;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .brand-section {
+    .brand-text {
+      display: none;
+    }
+  }
+}
+
+// Calendar global fixes
+.p-calendar .p-datepicker {
+  z-index: 1100 !important;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--border-radius) !important;
+  overflow: visible !important;
+  
+  .p-datepicker-header {
+    background: var(--background-primary) !important;
+    border-bottom: 1px solid var(--border-color) !important;
+    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    z-index: 1101 !important;
+    position: relative !important;
+    
+    .p-datepicker-title {
+      font-weight: 600 !important;
+      color: var(--text-primary) !important;
+      
+      select {
+        background: var(--background-primary) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 4px !important;
+        color: var(--text-primary) !important;
+        
+        &:focus {
+          border-color: var(--primary-color) !important;
+        }
+      }
+    }
+  }
+}
+
+// Ensure calendar panel is not clipped by parent containers
+.p-card,
+.p-card-body,
+.form-grid,
+.form-field {
+  overflow: visible !important;
+}
+
+// Specific fix for calendar in forms
+.student-form,
+.class-form,
+.school-form {
+  .p-card,
+  .p-card-body {
+    overflow: visible !important;
+  }
+  
+  .form-grid {
+    overflow: visible !important;
+  }
+  
+  .form-field {
+    overflow: visible !important;
+    position: relative !important;
+  }
+}

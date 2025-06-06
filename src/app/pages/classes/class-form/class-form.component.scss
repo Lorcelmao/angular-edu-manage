@@ -1,0 +1,192 @@
+.class-form {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid var(--border-color);
+
+    h2 {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin: 0;
+      background: linear-gradient(135deg, #10b981, #06d6a0);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    :host ::ng-deep .p-button {
+      height: 42px;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      transition: all var(--transition-fast);
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+    }
+  }
+
+  :host ::ng-deep .p-card {
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-lg);
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+
+    .p-card-body {
+      padding: 2rem;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+
+      label {
+        font-weight: 600;
+        color: var(--text-primary);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        font-size: 0.9rem;
+      }
+
+      .required {
+        color: var(--error-color);
+      }
+
+      .field-help {
+        font-size: 0.8rem;
+        color: var(--text-secondary);
+        margin-top: 0.25rem;
+      }
+
+      :host ::ng-deep .p-inputtext,
+      :host ::ng-deep .p-dropdown {
+        height: 42px;
+        border-radius: var(--border-radius);
+        border: 2px solid var(--border-color);
+        transition: all var(--transition-fast);
+        font-family: 'Inter', sans-serif;
+        font-size: 0.9rem;
+
+        &:focus {
+          border-color: var(--primary-color);
+          box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+          outline: none;
+        }
+
+        &.ng-invalid.ng-touched {
+          border-color: var(--error-color);
+          box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+        }
+      }
+
+      :host ::ng-deep .p-dropdown {
+        .p-dropdown-label {
+          font-size: 0.9rem;
+        }
+
+        .p-dropdown-panel {
+          border-radius: var(--border-radius);
+          box-shadow: var(--shadow-lg);
+        }
+      }
+
+      .p-error {
+        color: var(--error-color);
+        font-size: 0.8rem;
+        margin-top: 0.25rem;
+        font-weight: 500;
+      }
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border-color);
+
+    :host ::ng-deep .p-button {
+      height: 42px;
+      border-radius: var(--border-radius);
+      font-weight: 500;
+      padding: 0 1.5rem;
+      transition: all var(--transition-fast);
+      font-size: 0.9rem;
+      
+      &:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      &.p-button-success {
+        background: linear-gradient(135deg, #059669, #10b981);
+        border: none;
+      }
+
+      &.p-button-text {
+        color: var(--text-secondary);
+        
+        &:hover {
+          background: var(--background-tertiary);
+          color: var(--text-primary);
+        }
+      }
+    }
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .class-form {
+    :host ::ng-deep .p-card .p-card-body {
+      padding: 1.5rem;
+    }
+
+    .form-actions {
+      flex-direction: column-reverse;
+      gap: 0.75rem;
+
+      :host ::ng-deep .p-button {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  }
+}
+
+@media (max-width: 576px) {
+  .class-form {
+    .header-section {
+      flex-direction: column;
+      align-items: stretch;
+      gap: 1rem;
+    }
+
+    :host ::ng-deep .p-card .p-card-body {
+      padding: 1rem;
+    }
+
+    .form-grid {
+      gap: 0.75rem;
+    }
+  }
+}

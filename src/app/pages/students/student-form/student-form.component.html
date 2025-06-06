@@ -1,0 +1,100 @@
+<div class="student-form">
+  <div class="header-section">
+    <h2>{{ pageTitle }}</h2>
+    <p-button icon="pi pi-arrow-left" 
+              label="Quay lại" 
+              styleClass="p-button-text"
+              (onClick)="goBack()">
+    </p-button>
+  </div>
+
+  <p-card>
+    <form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="name">Tên học sinh <span class="required">*</span></label>
+          <input type="text" 
+                 id="name"
+                 pInputText 
+                 formControlName="name"
+                 placeholder="Nhập tên học sinh"
+                 [class.ng-invalid]="isFieldInvalid('name')">
+          <small class="p-error" *ngIf="isFieldInvalid('name')">
+            {{ getFieldError('name') }}
+          </small>
+        </div>
+
+        <div class="form-field calendar-field">
+          <label for="birthday">Ngày sinh <span class="required">*</span></label>
+          <p-calendar id="birthday"
+                      formControlName="birthday"
+                      placeholder="Chọn ngày sinh"
+                      [showIcon]="true"
+                      dateFormat="dd/mm/yy"
+                      [maxDate]="maxDate"
+                      [yearNavigator]="true"
+                      [monthNavigator]="true"
+                      yearRange="1900:2024"
+                      [appendTo]="'body'"
+                      [class.ng-invalid]="isFieldInvalid('birthday')">
+          </p-calendar>
+          <small class="p-error" *ngIf="isFieldInvalid('birthday')">
+            {{ getFieldError('birthday') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="schoolCode">Trường học</label>
+          <p-dropdown id="schoolCode"
+                      [options]="schools"
+                      formControlName="schoolCode"
+                      optionLabel="schoolName"
+                      optionValue="schoolCode"
+                      placeholder="Chọn trường học (tùy chọn)"
+                      (onChange)="onSchoolChange()"
+                      [showClear]="true"
+                      [disabled]="isViewMode">
+          </p-dropdown>
+          <small class="field-help">Chọn trường học để lọc danh sách lớp</small>
+        </div>
+
+        <div class="form-field">
+          <label for="classCode">Lớp học <span class="required">*</span></label>
+          <p-dropdown id="classCode"
+                      [options]="classes"
+                      formControlName="classCode"
+                      optionLabel="name"
+                      optionValue="classCode"
+                      placeholder="Chọn lớp học"
+                      (onChange)="onClassChange()"
+                      [class.ng-invalid]="isFieldInvalid('classCode')">
+            <ng-template let-class pTemplate="item">
+              <div class="class-option">
+                <span class="class-name">{{ class.name }} (Khối {{ class.grade }})</span>
+                <small class="school-name">{{ getSchoolName(class.schoolCode) }}</small>
+              </div>
+            </ng-template>
+          </p-dropdown>
+          <small class="p-error" *ngIf="isFieldInvalid('classCode')">
+            {{ getFieldError('classCode') }}
+          </small>
+        </div>
+      </div>
+
+      <div class="form-actions" *ngIf="!isViewMode">
+        <p-button type="button" 
+                  label="Hủy" 
+                  styleClass="p-button-text"
+                  (onClick)="goBack()">
+        </p-button>
+        <p-button type="submit" 
+                  [label]="isEditMode ? 'Cập nhật' : 'Thêm mới'"
+                  [loading]="loading"
+                  styleClass="p-button-success">
+        </p-button>
+      </div>
+    </form>
+  </p-card>
+</div>
+
+<!-- <p-toast></p-toast> -->

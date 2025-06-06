@@ -1,0 +1,69 @@
+<div class="school-list">
+  <div class="header-section">
+    <h2>Quản lý trường học</h2>
+    <div class="header-actions">
+      <span class="p-input-icon-left search-box">
+        <i class="pi pi-search"></i>
+        <input type="text" pInputText placeholder="Tìm kiếm..." 
+               [(ngModel)]="searchValue" class="search-input">
+      </span>
+      <p-button label="Thêm trường học" icon="pi pi-plus" 
+                (onClick)="createSchool()" styleClass="p-button-success">
+      </p-button>
+    </div>
+  </div>
+
+  <p-card>
+    <p-table [value]="filteredSchools" [loading]="loading" 
+             [paginator]="true" [rows]="10" [showCurrentPageReport]="true"
+             currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} trường">
+      
+      <ng-template pTemplate="header">
+        <tr>
+          <th>STT</th>
+          <th>Mã trường</th>
+          <th>Tên trường</th>
+          <th>Địa chỉ</th>
+          <th>Thao tác</th>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="body" let-school let-rowIndex="rowIndex">
+        <tr>
+          <td>{{ rowIndex + 1 }}</td>
+          <td>{{ school.schoolCode }}</td>
+          <td>{{ school.schoolName }}</td>
+          <td>{{ school.schoolAddress }}</td>
+          <td>
+            <div class="action-buttons">
+              <p-button icon="pi pi-eye" 
+                        pTooltip="Xem chi tiết"
+                        styleClass="p-button-text p-button-info"
+                        (onClick)="viewSchool(school)">
+              </p-button>
+              <p-button icon="pi pi-pencil" 
+                        pTooltip="Chỉnh sửa"
+                        styleClass="p-button-text p-button-warning"
+                        (onClick)="editSchool(school)">
+              </p-button>
+              <p-button icon="pi pi-trash" 
+                        pTooltip="Xóa"
+                        styleClass="p-button-text p-button-danger"
+                        (onClick)="deleteSchool(school)">
+              </p-button>
+            </div>
+          </td>
+        </tr>
+      </ng-template>
+
+      <ng-template pTemplate="emptymessage">
+        <tr>
+          <td colspan="5" class="text-center">Không có dữ liệu</td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </p-card>
+</div>
+
+<!-- <p-confirmDialog></p-confirmDialog> -->
+<!-- <p-toast></p-toast> -->
