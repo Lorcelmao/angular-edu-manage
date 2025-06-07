@@ -66,7 +66,7 @@ export class DashboardService {
       map(({ schools, classes }) => {
         const schoolClassMap = new Map<string, { schoolName: string; classCount: number }>();
         
-        // Initialize all schools with 0 classes
+        
         schools.data.forEach(school => {
           schoolClassMap.set(school.schoolCode, {
             schoolName: school.schoolName,
@@ -74,7 +74,7 @@ export class DashboardService {
           });
         });
 
-        // Count classes for each school
+        
         classes.data.forEach(classItem => {
           const schoolData = schoolClassMap.get(classItem.schoolCode);
           if (schoolData) {
@@ -82,7 +82,7 @@ export class DashboardService {
           }
         });
 
-        // Convert to array and sort by class count
+        
         return Array.from(schoolClassMap.entries())
           .map(([schoolCode, data]) => ({
             schoolCode,
@@ -102,7 +102,7 @@ export class DashboardService {
       map(({ classes, students }) => {
         const gradeMap = new Map<number, { classCount: number; studentCount: number }>();
 
-        // Count classes by grade
+        
         classes.data.forEach(classItem => {
           const grade = classItem.grade;
           if (!gradeMap.has(grade)) {
@@ -111,7 +111,7 @@ export class DashboardService {
           gradeMap.get(grade)!.classCount++;
         });
 
-        // Count students by grade (through their class)
+        
         students.data.forEach(student => {
           const studentClass = classes.data.find(c => c.classCode === student.classCode);
           if (studentClass) {
@@ -122,7 +122,7 @@ export class DashboardService {
           }
         });
 
-        // Convert to array and sort by grade
+        
         return Array.from(gradeMap.entries())
           .map(([grade, data]) => ({
             grade,

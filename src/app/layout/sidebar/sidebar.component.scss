@@ -11,14 +11,14 @@
   transition: transform var(--transition-normal);
   transform: translateX(0);
   
-  // Desktop: Always visible unless explicitly hidden
+  
   @media (min-width: 1201px) {
     &.sidebar-hidden {
       transform: translateX(-100%);
     }
   }
   
-  // Mobile/Tablet: Hidden by default, show on toggle
+  
   @media (max-width: 1200px) {
     transform: translateX(-100%);
     
@@ -188,7 +188,7 @@
   }
 }
 
-// Custom scrollbar for sidebar
+
 .sidebar .sidebar-content {
   &::-webkit-scrollbar {
     width: 4px;

@@ -151,7 +151,7 @@ export class ClassFormComponent implements OnInit {
             life: 4000
           });
           this.loading = false;
-          // Delay để user nhìn thấy toast trước khi navigate
+          
           setTimeout(() => {
             this.goBack();
           }, 1000);
@@ -182,7 +182,7 @@ export class ClassFormComponent implements OnInit {
             life: 4000
           });
           this.loading = false;
-          // Delay để user nhìn thấy toast trước khi navigate
+          
           setTimeout(() => {
             this.goBack();
           }, 1000);

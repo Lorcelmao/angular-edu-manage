@@ -6,15 +6,14 @@ import { Component, HostListener } from '@angular/core';
   styleUrls: ['./main-layout.component.scss']
 })
 export class MainLayoutComponent {
-  sidebarVisible: boolean = false; // Mặc định đóng cho tất cả màn hình
+  sidebarVisible: boolean = false; 
 
   constructor() {
-    // Không auto show sidebar nữa, để mặc định đóng
   }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: any) {
-    // Chỉ auto-close sidebar trên mobile khi resize
+    
     if (typeof window !== 'undefined' && window.innerWidth <= 1200) {
       this.sidebarVisible = false;
     }

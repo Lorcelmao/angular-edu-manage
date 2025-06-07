@@ -149,7 +149,7 @@
     }
   }
 
-  // Custom tooltip styling
+  
   :host ::ng-deep .p-tooltip {
     .p-tooltip-text {
       background: rgba(0, 0, 0, 0.9);
@@ -191,7 +191,7 @@
   }
 }
 
-// Responsive design
+
 @media (max-width: 768px) {
   .school-list {
     .header-section {

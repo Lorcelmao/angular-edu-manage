@@ -10,7 +10,6 @@
     </div>
   </div>
 
-  <!-- Statistics Cards -->
   <div class="stats-grid" [class.loading]="loading">
     <div class="stat-card schools-card animate-scale-in animate-stagger" (click)="navigateToSchools()">
       <div class="stat-icon">
@@ -62,10 +61,8 @@
     </div>
   </div>
 
-  <!-- Charts Section -->
   <div class="charts-section animate-slide-up">
     <div class="chart-grid">
-      <!-- School Classes Chart -->
       <div class="chart-container animate-scale-in">
         <div class="chart-card-custom">
           <div class="chart-header-custom">
@@ -88,7 +85,6 @@
         </div>
       </div>
 
-      <!-- Grade Distribution Chart -->
       <div class="chart-container animate-scale-in">
         <div class="chart-card-custom">
           <div class="chart-header-custom">
@@ -114,7 +110,6 @@
   </div>
 </div>
 
-<!-- Loading overlay -->
 <div class="loading-overlay" *ngIf="loading">
   <div class="loading-content">
     <p-progressSpinner styleClass="custom-spinner"></p-progressSpinner>

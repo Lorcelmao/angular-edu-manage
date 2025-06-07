@@ -17,12 +17,12 @@ export class ClassListComponent implements OnInit {
   schools: SchoolResponse[] = [];
   loading: boolean = false;
   
-  // Filter properties
+  
   selectedSchool: string = '';
   selectedGrade: number | null = null;
   searchValue: string = '';
   
-  // Grade options
+  
   grades: any[] = [
     { label: 'Lớp 1', value: 1 },
     { label: 'Lớp 2', value: 2 },
@@ -108,13 +108,13 @@ export class ClassListComponent implements OnInit {
   }
 
   onSchoolChange() {
-    // Reset khối đã chọn khi thay đổi trường
+    
     this.selectedGrade = null;
     this.loadClassesBySchool();
   }
 
   onGradeChange() {
-    // Không cần reload data, chỉ filter qua get filteredClasses
+    
   }
 
   clearFilters() {
@@ -173,7 +173,7 @@ export class ClassListComponent implements OnInit {
   get filteredClasses() {
     let filtered = this.classes;
 
-    // Filter by search value
+    
     if (this.searchValue) {
       filtered = filtered.filter(classItem => 
         classItem.name.toLowerCase().includes(this.searchValue.toLowerCase()) ||
@@ -182,7 +182,7 @@ export class ClassListComponent implements OnInit {
       );
     }
 
-    // Filter by grade
+    
     if (this.selectedGrade !== null) {
       filtered = filtered.filter(classItem => classItem.grade === this.selectedGrade);
     }

@@ -11,17 +11,17 @@ import { ErrorHandlerService } from '../../services/error-handler.service';
 export class DashboardComponent implements OnInit {
   loading: boolean = false;
   
-  // Statistics
+  
   totalSchools: number = 0;
   totalClasses: number = 0;
   totalStudents: number = 0;
   averageStudentsPerClass: number = 0;
   
-  // Charts data
+  
   schoolClassCounts: SchoolClassCount[] = [];
   gradeDistribution: GradeDistribution[] = [];
   
-  // Chart options
+  
   chartOptions: any;
   gradeChartData: any;
   schoolChartData: any;
@@ -41,7 +41,7 @@ export class DashboardComponent implements OnInit {
   loadDashboardData() {
     this.loading = true;
     
-    // Load main statistics
+    
     this.dashboardService.getDashboardStats().subscribe({
       next: (stats: DashboardStats) => {
         this.totalSchools = stats.totalSchools;
@@ -56,7 +56,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    // Load school class counts for chart
+    
     this.dashboardService.getSchoolClassCounts().subscribe({
       next: (data: SchoolClassCount[]) => {
         this.schoolClassCounts = data;
@@ -67,7 +67,7 @@ export class DashboardComponent implements OnInit {
       }
     });
 
-    // Load grade distribution
+    
     this.dashboardService.getGradeDistribution().subscribe({
       next: (data: GradeDistribution[]) => {
         this.gradeDistribution = data;
@@ -209,7 +209,7 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  // Navigation methods
+  
   navigateToSchools() {
     this.router.navigate(['/schools']);
   }

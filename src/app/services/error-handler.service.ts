@@ -16,7 +16,7 @@ export class ErrorHandlerService {
     let errorDetail = 'Vui lòng thử lại sau';
     
     if (error instanceof HttpErrorResponse) {
-      // HTTP Error Response - Include status code in message
+      
       switch (error.status) {
         case 400:
           errorMessage = `Lỗi 400: Dữ liệu không hợp lệ`;
@@ -65,13 +65,13 @@ export class ErrorHandlerService {
       severity: 'error',
       summary: errorMessage,
       detail: errorDetail,
-      life: 7000 // Tăng thời gian hiển thị để đọc được error code
+      life: 7000 
     });
   }
 
   private extractErrorMessage(error: HttpErrorResponse): string | null {
     if (error.error) {
-      // Try different common error response formats
+      
       if (typeof error.error === 'string') {
         return error.error;
       }

@@ -214,7 +214,7 @@
     }
   }
 
-  // Custom tooltip styling - same as class-list
+  
   :host ::ng-deep .p-tooltip {
     .p-tooltip-text {
       background: rgba(0, 0, 0, 0.9);
@@ -256,7 +256,7 @@
   }
 }
 
-// Responsive design
+
 @media (max-width: 1024px) {
   .student-list {
     .header-section {

@@ -189,7 +189,7 @@
     }
   }
 
-  // Custom tooltip styling
+  
   :host ::ng-deep .p-tooltip {
     .p-tooltip-text {
       background: rgba(0, 0, 0, 0.9);
@@ -231,7 +231,7 @@
   }
 }
 
-// Responsive design
+
 @media (max-width: 1200px) {
   .class-list {
     .header-section {
@@ -335,7 +335,7 @@
         }
 
         .search-box {
-          order: 3; // Đặt search box cuối cùng
+          order: 3; 
         }
 
         :host ::ng-deep .p-dropdown.filter-dropdown {

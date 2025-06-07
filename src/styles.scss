@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
 
-// Custom CSS Variables
+
 :root {
   --primary-color: #6366f1;
   --primary-light: #8b5cf6;
@@ -72,7 +72,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
-// Animation keyframes
+
 @keyframes slideInUp {
   from {
     opacity: 0;
@@ -115,7 +115,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Animation classes
+
 .animate-slide-up {
   animation: slideInUp 0.4s ease-out forwards;
 }
@@ -132,7 +132,7 @@ h1, h2, h3, h4, h5, h6 {
   animation: scaleIn 0.3s ease-out forwards;
 }
 
-// Staggered animations
+
 .animate-stagger {
   &:nth-child(1) { animation-delay: 0.1s; }
   &:nth-child(2) { animation-delay: 0.2s; }
@@ -141,7 +141,7 @@ h1, h2, h3, h4, h5, h6 {
   &:nth-child(5) { animation-delay: 0.5s; }
 }
 
-// Layout wrapper
+
 .layout-wrapper {
   min-height: 100vh;
 
@@ -167,7 +167,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Custom scrollbar
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -187,7 +187,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Responsive typography
+
 @media (max-width: 768px) {
   body {
     font-size: 14px;
@@ -201,7 +201,7 @@ h1, h2, h3, h4, h5, h6 {
   h6 { font-size: 0.875rem; }
 }
 
-// PrimeNG component overrides
+
 :host ::ng-deep {
   .p-card {
     border: none;
@@ -335,7 +335,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Responsive design
+
 @media (max-width: 1200px) {
   .layout-wrapper .layout-main .layout-content {
     margin-left: 0;
@@ -458,7 +458,7 @@ h1, h2, h3, h4, h5, h6 {
           }
         }
         
-        // Override tất cả các trạng thái active
+        
         &.p-menuitem-active,
         &.p-focus,
         &.p-highlight {
@@ -517,7 +517,7 @@ h1, h2, h3, h4, h5, h6 {
           }
         }
         
-        // Override submenu active states
+        
         &.p-menuitem-active,
         &.p-focus,
         &.p-highlight {
@@ -605,7 +605,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Calendar global fixes
+
 .p-calendar .p-datepicker {
   z-index: 1100 !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
@@ -638,7 +638,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-// Ensure calendar panel is not clipped by parent containers
+
 .p-card,
 .p-card-body,
 .form-grid,
@@ -646,7 +646,7 @@ h1, h2, h3, h4, h5, h6 {
   overflow: visible !important;
 }
 
-// Specific fix for calendar in forms
+
 .student-form,
 .class-form,
 .school-form {

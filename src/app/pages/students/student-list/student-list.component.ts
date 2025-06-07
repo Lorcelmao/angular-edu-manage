@@ -22,12 +22,12 @@ export class StudentListComponent implements OnInit {
   allClasses: ClassResponse[] = [];
   loading: boolean = false;
   
-  // Filter properties
-  selectedSchool: string = ''; // Thêm property này
+  
+  selectedSchool: string = ''; 
   selectedClass: string = '';
   searchValue: string = '';
   
-  // Pagination
+  
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -39,7 +39,7 @@ export class StudentListComponent implements OnInit {
     private router: Router,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private errorHandler: ErrorHandlerService // Inject ErrorHandlerService
+    private errorHandler: ErrorHandlerService 
   ) {}
 
   ngOnInit() {
@@ -63,7 +63,7 @@ export class StudentListComponent implements OnInit {
     this.classService.getAllClasses().subscribe({
       next: (response: BaseResponse<ClassResponse[]>) => {
         this.allClasses = response.data;
-        this.classes = [...this.allClasses]; // Hiển thị tất cả lớp ban đầu
+        this.classes = [...this.allClasses]; 
       },
       error: (error: any) => {
         this.errorHandler.handleError(error, 'tải danh sách lớp học');
@@ -72,14 +72,14 @@ export class StudentListComponent implements OnInit {
   }
 
   onSchoolChange() {
-    // Reset về trang đầu khi thay đổi filter
+    
     this.first = 0;
     
     if (this.selectedSchool) {
-      // Lọc lớp theo trường được chọn
+      
       this.classes = this.allClasses.filter(c => c.schoolCode === this.selectedSchool);
       
-      // Reset lớp đã chọn nếu không thuộc trường mới
+      
       if (this.selectedClass) {
         const classExists = this.classes.find(c => c.classCode === this.selectedClass);
         if (!classExists) {
@@ -87,7 +87,7 @@ export class StudentListComponent implements OnInit {
         }
       }
     } else {
-      // Hiển thị tất cả lớp khi không chọn trường
+      
       this.classes = [...this.allClasses];
       this.selectedClass = '';
     }
@@ -96,10 +96,10 @@ export class StudentListComponent implements OnInit {
   }
 
   onClassChange() {
-    // Reset về trang đầu khi thay đổi filter
+    
     this.first = 0;
     
-    // Tự động chọn trường tương ứng khi chọn lớp
+    
     if (this.selectedClass && !this.selectedSchool) {
       const selectedClassObj = this.allClasses.find(c => c.classCode === this.selectedClass);
       if (selectedClassObj) {
@@ -120,7 +120,7 @@ export class StudentListComponent implements OnInit {
     this.loading = true;
     
     if (this.selectedClass) {
-      // Load students by class
+      
       this.studentService.getStudentsByClass(this.selectedClass).subscribe({
         next: (response: BaseResponse<StudentResponse[]>) => {
           this.students = response.data;
@@ -133,10 +133,10 @@ export class StudentListComponent implements OnInit {
         }
       });
     } else if (this.selectedSchool) {
-      // Load students by school
+      
       this.studentService.getAllStudents().subscribe({
         next: (response: BaseResponse<StudentResponse[]>) => {
-          // Lọc học sinh theo trường được chọn
+          
           const schoolClasses = this.allClasses.filter(c => c.schoolCode === this.selectedSchool);
           const schoolClassCodes = schoolClasses.map(c => c.classCode);
           
@@ -152,7 +152,7 @@ export class StudentListComponent implements OnInit {
         }
       });
     } else {
-      // Load all students
+      
       this.studentService.getAllStudents().subscribe({
         next: (response: BaseResponse<StudentResponse[]>) => {
           this.students = response.data;
@@ -248,17 +248,17 @@ export class StudentListComponent implements OnInit {
   formatDate(date: Date | string): string {
     if (!date) return '';
     
-    // Nếu date là string với format dd-MM-yyyy từ backend
+    
     if (typeof date === 'string') {
-      // Parse string "26-08-2004" thành Date object
+      
       const parts = date.split('-');
       if (parts.length === 3) {
         const day = parseInt(parts[0]);
-        const month = parseInt(parts[1]) - 1; // Month trong JS bắt đầu từ 0
+        const month = parseInt(parts[1]) - 1; 
         const year = parseInt(parts[2]);
         const parsedDate = new Date(year, month, day);
         
-        // Kiểm tra nếu date hợp lệ
+        
         if (!isNaN(parsedDate.getTime())) {
           return parsedDate.toLocaleDateString('vi-VN');
         }
@@ -266,7 +266,7 @@ export class StudentListComponent implements OnInit {
       return 'Invalid Date';
     }
     
-    // Nếu date đã là Date object
+    
     const dateObj = new Date(date);
     if (isNaN(dateObj.getTime())) {
       return 'Invalid Date';
@@ -276,7 +276,7 @@ export class StudentListComponent implements OnInit {
   }
 
   onSearch() {
-    this.first = 0; // Reset to first page when searching
+    this.first = 0; 
     this.loadStudents();
   }
 
@@ -291,7 +291,7 @@ export class StudentListComponent implements OnInit {
     this.selectedClass = '';
     this.searchValue = '';
     this.first = 0;
-    this.classes = [...this.allClasses]; // Reset về tất cả lớp
+    this.classes = [...this.allClasses]; 
     this.loadStudents();
   }
 }

@@ -164,7 +164,7 @@
         transform: translateX(4px);
       }
 
-      // Card specific colors
+      
       &.schools-card {
         .stat-icon {
           background: linear-gradient(135deg, #6366f1, #8b5cf6);
@@ -324,13 +324,13 @@
   }
 }
 
-// Animations
+
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-20px); }
 }
 
-// Responsive design
+
 @media (max-width: 768px) {
   .dashboard {
     .header-section {

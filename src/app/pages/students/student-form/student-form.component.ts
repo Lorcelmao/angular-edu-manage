@@ -28,7 +28,7 @@ export class StudentFormComponent implements OnInit {
   allClasses: ClassResponse[] = [];
   selectedSchool: string = '';
   
-  // Thêm property maxDate để sử dụng trong template
+  
   maxDate: Date = new Date();
 
   constructor(
@@ -39,7 +39,7 @@ export class StudentFormComponent implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService,
-    private errorHandler: ErrorHandlerService // Inject ErrorHandlerService
+    private errorHandler: ErrorHandlerService 
   ) {
     this.studentForm = this.fb.group({
       name: ['', [Validators.required, Validators.minLength(2)]],
@@ -50,7 +50,7 @@ export class StudentFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Load schools và classes trước, sau đó mới load student
+    
     this.loadSchools();
     this.loadAllClassesThenLoadStudent();
     
@@ -86,7 +86,7 @@ export class StudentFormComponent implements OnInit {
         this.allClasses = response.data;
         this.classes = [...this.allClasses];
         
-        // Sau khi load classes xong, mới load student
+        
         if (this.studentId) {
           this.loadStudent();
         }
@@ -107,7 +107,7 @@ export class StudentFormComponent implements OnInit {
       this.classes = [...this.allClasses];
     }
     
-    // Clear class selection if current class doesn't belong to selected school
+    
     const currentClass = this.studentForm.get('classCode')?.value;
     if (currentClass && this.selectedSchool) {
       const classExists = this.classes.find(c => c.classCode === currentClass);
@@ -137,21 +137,21 @@ export class StudentFormComponent implements OnInit {
       next: (response: BaseResponse<StudentResponse>) => {
         const student = response.data;
         
-        // Parse ngày sinh từ backend format "dd-MM-yyyy"
+        
         const parsedBirthday = this.parseBackendDate(student.birthday as string);
         
-        // Tìm class để lấy schoolCode TRƯỚC KHI set form values
+        
         const studentClass = this.allClasses.find(c => c.classCode === student.classCode);
         
-        // Set form values bao gồm cả schoolCode
+        
         this.studentForm.patchValue({
           name: student.name,
           birthday: parsedBirthday,
           classCode: student.classCode,
-          schoolCode: studentClass ? studentClass.schoolCode : '' // Set schoolCode ngay lập tức
+          schoolCode: studentClass ? studentClass.schoolCode : '' 
         });
         
-        // Update UI state
+        
         if (studentClass) {
           this.selectedSchool = studentClass.schoolCode;
           this.classes = this.allClasses.filter(c => c.schoolCode === this.selectedSchool);
@@ -242,7 +242,7 @@ export class StudentFormComponent implements OnInit {
     return '';
   }
 
-  // Cập nhật method getSchoolName
+  
   getSchoolName(schoolCode: string): string {
     const school = this.schools.find(s => s.schoolCode === schoolCode);
     return school ? school.schoolName : schoolCode;
@@ -251,15 +251,15 @@ export class StudentFormComponent implements OnInit {
   parseBackendDate(dateString: string): Date | null {
     if (!dateString) return null;
     
-    // Parse string "26-08-2004" thành Date object
+    
     const parts = dateString.split('-');
     if (parts.length === 3) {
       const day = parseInt(parts[0]);
-      const month = parseInt(parts[1]) - 1; // Month trong JS bắt đầu từ 0
+      const month = parseInt(parts[1]) - 1; 
       const year = parseInt(parts[2]);
       const parsedDate = new Date(year, month, day);
       
-      // Kiểm tra nếu date hợp lệ
+      
       if (!isNaN(parsedDate.getTime())) {
         return parsedDate;
       }

@@ -10,10 +10,10 @@ export class HeaderComponent implements OnInit {
   @Output() sidebarToggled = new EventEmitter<boolean>();
   
   items: MenuItem[] = [];
-  sidebarVisible: boolean = false; // Mặc định đóng
+  sidebarVisible: boolean = false; 
 
   ngOnInit() {
-    // Không auto show sidebar nữa
+    
     
     this.items = [
       {

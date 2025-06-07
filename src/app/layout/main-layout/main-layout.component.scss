@@ -4,7 +4,7 @@
 
   .layout-main {
     display: flex;
-    margin-top: 60px; // Header height
+    margin-top: 60px; 
     position: relative;
 
     .layout-content {
@@ -13,9 +13,9 @@
       margin-left: 0;
       transition: margin-left var(--transition-normal);
       width: 100%;
-      overflow-x: hidden; // Prevent horizontal overflow
+      overflow-x: hidden; 
 
-      // When sidebar is visible on desktop
+      
       @media (min-width: 1201px) {
         margin-left: 250px;
         
@@ -43,7 +43,7 @@
   }
 }
 
-// Overlay for mobile when sidebar is open
+
 .sidebar-overlay {
   position: fixed;
   top: 60px;
