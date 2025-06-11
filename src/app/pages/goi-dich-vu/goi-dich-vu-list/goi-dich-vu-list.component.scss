@@ -62,7 +62,89 @@
   gap: 0.25rem;
 }
 
+// Table header styling
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+  
+  .page-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.95rem;
+  }
+}
+
+// Custom paginator styling
+.custom-paginator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-top: 1px solid #e9ecef;
+  
+  .paginator-info {
+    font-size: 0.95rem;
+    color: #495057;
+  }
+  
+  .paginator-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    
+    .page-numbers {
+      display: flex;
+      gap: 0.35rem;
+      margin: 0 0.5rem;
+      
+      button {
+        min-width: 2.5rem;
+        height: 2.5rem;
+        
+        &.active-page {
+          background-color: #2196F3;
+          border-color: #2196F3;
+        }
+      }
+    }
+    
+    button {
+      min-width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+}
+
 :host ::ng-deep {
+  // Điều chỉnh kích thước bảng lớn hơn một chút
+  .p-datatable-sm {
+    .p-datatable-thead > tr > th,
+    .p-datatable-tbody > tr > td {
+      padding: 0.65rem 0.5rem;
+    }
+
+    .p-datatable-tbody > tr > td {
+      font-size: 0.9rem;
+    }
+
+    .p-datatable-thead > tr > th {
+      font-size: 0.95rem;
+    }
+  }
+
+  // Điều chỉnh kích thước chip lớn hơn một chút
+  .small-chip {
+    height: 24px !important;
+
+    .p-chip-text {
+      font-size: 0.85rem !important;
+    }
+  }
+
+  // Style cho từng loại chip
   .main-service-chip {
     background-color: #e3f2fd;
     color: #0288d1;
@@ -77,68 +159,28 @@
     background-color: #fff8e1;
     color: #ffa000;
   }
-}
 
-.table-header {
-  display: flex;
-  justify-content: flex-end;
-  margin-bottom: 1rem;
-
-  .page-size-selector {
+  // Điều chỉnh nút action lớn hơn một chút
+  .action-buttons {
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.9rem;
-  }
-}
+    justify-content: center;
 
-.custom-paginator {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
-  padding: 0.5rem;
-  border-top: 1px solid #e9ecef;
+    .p-button {
+      width: 2.2rem;
+      height: 2.2rem;
 
-  .paginator-info {
-    font-size: 0.9rem;
-    color: #6c757d;
-  }
-
-  .paginator-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-
-    .page-numbers {
-      display: flex;
-      gap: 0.25rem;
-      margin: 0 0.5rem;
-
-      button {
-        min-width: 2.5rem;
-        height: 2.5rem;
-
-        &.active-page {
-          background-color: #2196f3;
-          border-color: #2196f3;
-        }
+      .p-button-icon {
+        font-size: 0.95rem;
       }
     }
-
-    button {
-      min-width: 2.5rem;
-      height: 2.5rem;
-    }
   }
-}
 
-// Style cho p-dropdown trong phân trang
-:host ::ng-deep {
+  // Style cho p-dropdown trong phân trang
   .p-dropdown.page-size-dropdown {
     min-width: 5rem;
   }
 
+  // Style cho paginator
   .p-paginator {
     .p-paginator-pages {
       .p-paginator-page {
@@ -164,4 +206,71 @@
       }
     }
   }
+
+  // Styling cho các tab theo màu chip
+  .p-tabview {
+    .p-tabview-nav {
+      li:nth-child(1) { // Dịch vụ chính - tab đầu tiên
+        .p-tabview-nav-link {
+          color: #0288d1;
+          
+          &:not(.p-disabled):focus {
+            box-shadow: 0 0 0 0.2rem rgba(2, 136, 209, 0.2);
+          }
+          
+          .p-tabview-left-icon {
+            color: #0288d1;
+          }
+        }
+        
+        &.p-highlight .p-tabview-nav-link {
+          background-color: #e3f2fd;
+          border-color: #0288d1;
+          color: #0288d1;
+        }
+      }
+      
+      li:nth-child(2) { // Dịch vụ thêm - tab thứ hai
+        .p-tabview-nav-link {
+          color: #388e3c;
+          
+          &:not(.p-disabled):focus {
+            box-shadow: 0 0 0 0.2rem rgba(56, 142, 60, 0.2);
+          }
+          
+          .p-tabview-left-icon {
+            color: #388e3c;
+          }
+        }
+        
+        &.p-highlight .p-tabview-nav-link {
+          background-color: #e8f5e9;
+          border-color: #388e3c;
+          color: #388e3c;
+        }
+      }
+      
+      li:nth-child(3) { // Nội dung đặc điểm - tab thứ ba
+        .p-tabview-nav-link {
+          color: #ffa000;
+          
+          &:not(.p-disabled):focus {
+            box-shadow: 0 0 0 0.2rem rgba(255, 160, 0, 0.2);
+          }
+          
+          .p-tabview-left-icon {
+            color: #ffa000;
+          }
+        }
+        
+        &.p-highlight .p-tabview-nav-link {
+          background-color: #fff8e1;
+          border-color: #ffa000;
+          color: #ffa000;
+        }
+      }
+    }
+  }
 }
+
+// Style cho text bị cắt ngắn - thêm dấu "..."

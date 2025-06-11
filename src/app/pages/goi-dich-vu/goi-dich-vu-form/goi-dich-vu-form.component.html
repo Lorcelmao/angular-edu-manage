@@ -38,17 +38,15 @@
           </small>
         </div>
 
+        <!-- Thay thế phần input giá gói dịch vụ -->
         <div class="form-field">
           <label for="giaGoi">Giá tiền <span class="required">*</span></label>
-          <p-inputNumber id="giaGoi"
-                         formControlName="giaGoi"
-                         placeholder="Nhập giá gói dịch vụ"
-                         mode="currency" 
-                         currency="VND" 
-                         locale="vi-VN"
-                         [minFractionDigits]="0"
-                         [class.ng-invalid]="isFieldInvalid('giaGoi')">
-          </p-inputNumber>
+          <input type="number" 
+                 id="giaGoi"
+                 pInputText 
+                 formControlName="giaGoi"
+                 placeholder="Nhập giá gói dịch vụ"
+                 [class.ng-invalid]="isFieldInvalid('giaGoi')">
           <small class="p-error" *ngIf="isFieldInvalid('giaGoi')">
             {{ getFieldError('giaGoi') }}
           </small>
@@ -113,20 +111,10 @@
           </ng-template>
         </p-dropdown>
         
-        <!-- Thêm dropdown để chọn loại dịch vụ -->
-        <div class="service-type-selection">
-          <p-dropdown [options]="serviceTypes" 
-                      [(ngModel)]="selectedServiceType"
-                      optionLabel="label" 
-                      optionValue="value"
-                      placeholder="Chọn loại dịch vụ">
-          </p-dropdown>
-        </div>
-        
         <p-button label="Thêm dịch vụ" 
                   icon="pi pi-plus" 
                   (onClick)="addServiceToPackage()"
-                  [disabled]="!selectedService || !selectedServiceType"
+                  [disabled]="!selectedService"
                   styleClass="p-button-success">
         </p-button>
       </div>
@@ -276,16 +264,13 @@
         <div class="total-content">
           <div class="total-row">
             <span class="total-label">Giá gói dịch vụ:</span>
-            <span class="total-value">{{ formatCurrency(calculateTotalPackagePrice()) }}</span>
+            <span class="total-value">{{ formatCurrency(goiDichVuForm.get('giaGoi')?.value || 0) }}</span>
           </div>
           <div class="total-row">
             <span class="total-label">Tổng giá trị dịch vụ:</span>
             <span class="total-value">{{ formatCurrency(calculateTotalServicesPrice()) }}</span>
           </div>
-          <div class="total-row grand-total">
-            <span class="total-label">Tổng giá trị:</span>
-            <span class="total-value">{{ formatCurrency(calculateTotalPrice()) }}</span>
-          </div>
+          <!-- Bỏ dòng tổng giá trị ở dưới cùng -->
         </div>
       </p-card>
     </div>

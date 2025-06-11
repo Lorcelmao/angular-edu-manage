@@ -169,4 +169,57 @@ export class GoiDichVuListComponent implements OnInit {
     // Giữ nguyên mã hiện tại
     return `${service.tenDichVu}\nGiá: ${this.formatCurrency(service.giaTien)}\nThời gian: ${service.deliveryTime} ngày\n${service.moTa}`;
   }
+
+  // Tính tổng thời gian cung cấp dịch vụ (lấy thời gian cao nhất trong các dịch vụ)
+  calculateTotalDeliveryTime(goiDichVu: GoiDichVuResponse): number {
+    let maxTime = 0;
+    
+    // Tính tổng thời gian từ các dịch vụ chính
+    if (goiDichVu.dichvuchinh?.length) {
+      goiDichVu.dichvuchinh.forEach(service => {
+        if (service.deliveryTime > maxTime) {
+          maxTime = service.deliveryTime;
+        }
+      });
+    }
+    
+    // Tính tổng thời gian từ các dịch vụ thêm
+    if (goiDichVu.dichvuthem?.length) {
+      goiDichVu.dichvuthem.forEach(service => {
+        if (service.deliveryTime > maxTime) {
+          maxTime = service.deliveryTime;
+        }
+      });
+    }
+    
+    // Tính tổng thời gian từ các nội dung đặc điểm
+    if (goiDichVu.noiDungDacDiem?.length) {
+      goiDichVu.noiDungDacDiem.forEach(service => {
+        if (service.deliveryTime > maxTime) {
+          maxTime = service.deliveryTime;
+        }
+      });
+    }
+    
+    return maxTime;
+  }
+
+  // Định dạng ngày tháng kèm giờ phút giây
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'N/A';
+    
+    const date = new Date(dateString);
+    
+    // Format: DD/MM/YYYY HH:MM:SS
+    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
+  }
+
+  // Đếm tổng số dịch vụ trong gói
+  getTotalServiceCount(goiDichVu: GoiDichVuResponse): number {
+    let count = 0;
+    count += goiDichVu.dichvuchinh?.length || 0;
+    count += goiDichVu.dichvuthem?.length || 0;
+    count += goiDichVu.noiDungDacDiem?.length || 0;
+    return count;
+  }
 }

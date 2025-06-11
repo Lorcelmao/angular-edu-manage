@@ -32,7 +32,6 @@ export class GoiDichVuFormComponent implements OnInit {
   // Danh sách dịch vụ chưa thêm vào gói
   availableServices: ServiceResponse[] = [];
   selectedService: string = '';
-  selectedServiceType: 'dichvuchinh' | 'dichvuthem' = 'dichvuchinh';
   serviceTypes = [
     { label: 'Dịch vụ chính', value: 'dichvuchinh' },
     { label: 'Dịch vụ thêm', value: 'dichvuthem' },
@@ -229,7 +228,7 @@ export class GoiDichVuFormComponent implements OnInit {
     this.goiDichVuService.addServiceToPackage(
       this.goiDichVuId, 
       this.selectedService
-      // Không gửi selectedServiceType nữa
+      // Đã bỏ tham số selectedServiceType
     ).subscribe({
       next: (response) => {
         this.errorHandler.handleSuccess('Thành công', 'Thêm dịch vụ vào gói thành công');
@@ -312,15 +311,12 @@ export class GoiDichVuFormComponent implements OnInit {
   }
 
   calculateTotalPackagePrice(): number {
-    const basePrice = this.goiDichVuForm.get('giaTien')?.value || 0;
+    // Sửa để sử dụng giaGoi thay vì giaTien
+    const basePrice = this.goiDichVuForm.get('giaGoi')?.value || 0;
     return Number(basePrice);
   }
 
   calculateTotalServicesPrice(): number {
     return this.services.reduce((total, service) => total + service.giaTien, 0);
-  }
-
-  calculateTotalPrice(): number {
-    return this.calculateTotalPackagePrice() + this.calculateTotalServicesPrice();
   }
 }

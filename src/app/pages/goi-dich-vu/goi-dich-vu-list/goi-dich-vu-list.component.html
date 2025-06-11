@@ -47,70 +47,74 @@
     <p-table [value]="filteredGoiDichVus" 
              [loading]="loading"
              [first]="first"
-             [rows]="rows">
+             [rows]="rows"
+             styleClass="p-datatable-sm">
       
-      <!-- Nội dung bảng giữ nguyên -->
+      <!-- Cập nhật header với kích thước cột phù hợp hơn -->
       <ng-template pTemplate="header">
         <tr>
-          <th>STT</th>
-          <th>Tên gói dịch vụ</th>
-          <th>Mô tả</th>
-          <th>Giá tiền</th>
-          <th>Dịch vụ</th>
-          <th>Thao tác</th>
+          <th style="width: 4%">STT</th>
+          <th style="width: 13%">Tên gói</th>
+          <th style="width: 12%">Mô tả</th>
+          <th style="width: 8%">Giá tiền</th>
+          <th style="width: 10%">PT Thanh toán</th>
+          <th style="width: 9%">Chi phí phát sinh</th>
+          <th style="width: 9%">Thời gian cung cấp</th>
+          <th style="width: 16%">Dịch vụ</th>
+          <th style="width: 9%">Ngày tạo</th>
+          <th style="width: 9%">Cập nhật</th>
+          <th style="width: 10%">Thao tác</th>
         </tr>
       </ng-template>
 
+      <!-- Cập nhật body với các cột bổ sung -->
       <ng-template pTemplate="body" let-goiDichVu let-rowIndex="rowIndex">
-        <!-- Nội dung các hàng giữ nguyên -->
         <tr>
           <td>{{ first + rowIndex + 1 }}</td>
-          <td>{{ goiDichVu.tenGoi }}</td>
-          <td>{{ goiDichVu.moTa }}</td>
+          <td>
+            <div class="truncate-text" [pTooltip]="goiDichVu.tenGoi">
+              {{ goiDichVu.tenGoi }}
+            </div>
+          </td>
+          <td>
+            <div class="truncate-text" [pTooltip]="goiDichVu.moTa">
+              {{ goiDichVu.moTa }}
+            </div>
+          </td>
           <td>{{ formatCurrency(goiDichVu.giaGoi) }}</td>
           <td>
-            <!-- Hiển thị các dịch vụ với chip và tooltip -->
+            <div class="truncate-text" [pTooltip]="goiDichVu.phuongThucThanhToan || 'Chưa thiết lập'">
+              {{ goiDichVu.phuongThucThanhToan || 'Chưa thiết lập' }}
+            </div>
+          </td>
+          <td>{{ formatCurrency(goiDichVu.chiPhiPhatSinh || 0) }}</td>
+          <td>{{ calculateTotalDeliveryTime(goiDichVu) }} ngày</td>
+          <td>
+            <!-- Hiển thị dịch vụ dưới dạng chip, thu gọn lại kích thước -->
             <div class="services-container">
-              <!-- Dịch vụ chính -->
-              <div class="service-category" *ngIf="goiDichVu.dichvuchinh?.length > 0">
-                <label class="service-category-label">Dịch vụ chính:</label>
-                <div class="service-chips">
-                  <p-chip *ngFor="let service of goiDichVu.dichvuchinh" 
-                          [label]="service.tenDichVu"
-                          styleClass="main-service-chip"
-                          [pTooltip]="getServiceTooltip(service)"
-                          tooltipPosition="top">
-                  </p-chip>
-                </div>
-              </div>
-              
-              <!-- Dịch vụ thêm -->
-              <div class="service-category" *ngIf="goiDichVu.dichvuthem?.length > 0">
-                <label class="service-category-label">Dịch vụ thêm:</label>
-                <div class="service-chips">
-                  <p-chip *ngFor="let service of goiDichVu.dichvuthem" 
-                          [label]="service.tenDichVu"
-                          styleClass="additional-service-chip"
-                          [pTooltip]="getServiceTooltip(service)"
-                          tooltipPosition="top">
-                  </p-chip>
-                </div>
-              </div>
-              
-              <!-- Nội dung đặc điểm -->
-              <div class="service-category" *ngIf="goiDichVu.noiDungDacDiem?.length > 0">
-                <label class="service-category-label">Nội dung đặc điểm:</label>
-                <div class="service-chips">
-                  <p-chip *ngFor="let service of goiDichVu.noiDungDacDiem" 
-                          [label]="service.tenDichVu"
-                          styleClass="feature-service-chip"
-                          [pTooltip]="getServiceTooltip(service)"
-                          tooltipPosition="top">
-                  </p-chip>
-                </div>
+              <div class="service-chips-compact">
+                <p-chip *ngFor="let service of goiDichVu.dichvuchinh?.slice(0, 2)" 
+                        [label]="service.tenDichVu" 
+                        styleClass="main-service-chip small-chip"
+                        [pTooltip]="getServiceTooltip(service)"
+                        tooltipPosition="top">
+                </p-chip>
+                
+                <p-chip *ngFor="let service of goiDichVu.dichvuthem?.slice(0, 2)" 
+                        [label]="service.tenDichVu"
+                        styleClass="additional-service-chip small-chip"
+                        [pTooltip]="getServiceTooltip(service)"
+                        tooltipPosition="top">
+                </p-chip>
+                
+                <span class="more-services" *ngIf="getTotalServiceCount(goiDichVu) > 4">
+                  +{{ getTotalServiceCount(goiDichVu) - 4 }}
+                </span>
               </div>
             </div>
           </td>
+          <td>{{ formatDate(goiDichVu.createdAt) }}</td>
+          <td>{{ formatDate(goiDichVu.updatedAt) }}</td>
           <td>
             <div class="action-buttons">
               <p-button icon="pi pi-eye" 
