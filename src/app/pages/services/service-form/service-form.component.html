@@ -1,0 +1,85 @@
+<div class="service-form">
+  <div class="header-section">
+    <h2>{{ pageTitle }}</h2>
+    <p-button icon="pi pi-arrow-left" 
+              label="Quay lại" 
+              styleClass="p-button-text"
+              (onClick)="goBack()">
+    </p-button>
+  </div>
+
+  <p-card>
+    <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="tenDichVu">Tên dịch vụ <span class="required">*</span></label>
+          <input type="text" 
+                 id="tenDichVu"
+                 pInputText 
+                 formControlName="tenDichVu"
+                 placeholder="Nhập tên dịch vụ"
+                 [class.ng-invalid]="isFieldInvalid('tenDichVu')">
+          <small class="p-error" *ngIf="isFieldInvalid('tenDichVu')">
+            {{ getFieldError('tenDichVu') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="moTa">Mô tả <span class="required">*</span></label>
+          <textarea id="moTa"
+                    pInputTextarea 
+                    formControlName="moTa"
+                    placeholder="Nhập mô tả dịch vụ"
+                    rows="4"
+                    [class.ng-invalid]="isFieldInvalid('moTa')">
+          </textarea>
+          <small class="p-error" *ngIf="isFieldInvalid('moTa')">
+            {{ getFieldError('moTa') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="giaTien">Giá (VNĐ) <span class="required">*</span></label>
+          <p-inputNumber id="giaTien"
+                         formControlName="giaTien"
+                         placeholder="Nhập giá dịch vụ"
+                         [min]="0"
+                         mode="currency"
+                         currency="VND"
+                         locale="vi-VN"
+                         [class.ng-invalid]="isFieldInvalid('giaTien')">
+          </p-inputNumber>
+          <small class="p-error" *ngIf="isFieldInvalid('giaTien')">
+            {{ getFieldError('giaTien') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="deliveryTime">Thời gian thực hiện (ngày) <span class="required">*</span></label>
+          <p-inputNumber id="deliveryTime"
+                         formControlName="deliveryTime"
+                         placeholder="Nhập thời gian thực hiện"
+                         [min]="1"
+                         [class.ng-invalid]="isFieldInvalid('deliveryTime')">
+          </p-inputNumber>
+          <small class="p-error" *ngIf="isFieldInvalid('deliveryTime')">
+            {{ getFieldError('deliveryTime') }}
+          </small>
+        </div>
+      </div>
+
+      <div class="form-actions" *ngIf="!isViewMode">
+        <p-button type="button" 
+                  label="Hủy" 
+                  styleClass="p-button-text"
+                  (onClick)="goBack()">
+        </p-button>
+        <p-button type="submit" 
+                  [label]="isEditMode ? 'Cập nhật' : 'Thêm mới'"
+                  [loading]="loading"
+                  styleClass="p-button-success">
+        </p-button>
+      </div>
+    </form>
+  </p-card>
+</div>

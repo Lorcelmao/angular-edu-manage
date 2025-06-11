@@ -39,6 +39,16 @@ export class HeaderComponent implements OnInit {
             label: 'Học sinh',
             icon: 'pi pi-user',
             routerLink: '/students'
+          },
+          {
+          label: 'Dịch vụ',
+          icon: 'pi pi-cog',
+          routerLink: '/services'
+          },
+          {
+            label: 'Gói dịch vụ',
+            icon: 'pi pi-briefcase',
+            routerLink: '/goi-dich-vu'
           }
         ]
       }

@@ -1,0 +1,80 @@
+.goi-dich-vu-list {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.75rem;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      .search-box {
+        margin-right: 0.5rem;
+        width: 250px;
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.25rem;
+    justify-content: center;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .mr-2 {
+    margin-right: 0.5rem;
+  }
+}
+
+.services-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 350px;
+}
+
+.service-category {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.service-category-label {
+  font-weight: bold;
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.service-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+:host ::ng-deep {
+  .main-service-chip {
+    background-color: #e3f2fd;
+    color: #0288d1;
+  }
+
+  .additional-service-chip {
+    background-color: #e8f5e9;
+    color: #388e3c;
+  }
+
+  .feature-service-chip {
+    background-color: #fff8e1;
+    color: #ffa000;
+  }
+}

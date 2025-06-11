@@ -9,6 +9,9 @@ import { CardModule } from 'primeng/card';
 import { TableModule } from 'primeng/table';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { InputNumberModule } from 'primeng/inputnumber'; 
+import { InputSwitchModule } from 'primeng/inputswitch'; 
+import { TagModule } from 'primeng/tag'; 
 import { MenubarModule } from 'primeng/menubar';
 import { PanelMenuModule } from 'primeng/panelmenu';
 import { AvatarModule } from 'primeng/avatar';
@@ -21,6 +24,8 @@ import { CalendarModule } from 'primeng/calendar';
 
 import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import { ChipModule } from 'primeng/chip';
+import { TabViewModule } from 'primeng/tabview';
 
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
@@ -43,6 +48,10 @@ import { ClassFormComponent } from './pages/classes/class-form/class-form.compon
 import { StudentListComponent } from './pages/students/student-list/student-list.component';
 import { StudentFormComponent } from './pages/students/student-form/student-form.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
+import { ServiceListComponent } from './pages/services/service-list/service-list.component';
+import { ServiceFormComponent } from './pages/services/service-form/service-form.component';
+import { GoiDichVuListComponent } from './pages/goi-dich-vu/goi-dich-vu-list/goi-dich-vu-list.component';
+import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi-dich-vu-form.component';
 
 @NgModule({
   declarations: [
@@ -57,6 +66,10 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     StudentListComponent,
     StudentFormComponent,
     DashboardComponent,
+    ServiceListComponent,
+    ServiceFormComponent,
+    GoiDichVuListComponent,
+    GoiDichVuFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -70,6 +83,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     TableModule,
     InputTextModule,
     InputTextareaModule,
+    InputNumberModule, 
+    InputSwitchModule, 
+    TagModule, 
     MenubarModule,
     PanelMenuModule,
     AvatarModule,
@@ -79,7 +95,9 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
     DropdownModule,
     CalendarModule,
     ChartModule,
-    ProgressSpinnerModule
+    ProgressSpinnerModule,
+    ChipModule,
+    TabViewModule
   ],
   providers: [MessageService,ConfirmationService],
   bootstrap: [AppComponent]

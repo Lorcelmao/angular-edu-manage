@@ -1,0 +1,293 @@
+<div class="goi-dich-vu-form">
+  <div class="header-section">
+    <h2>{{ pageTitle }}</h2>
+    <p-button icon="pi pi-arrow-left" 
+              label="Quay lại" 
+              styleClass="p-button-text"
+              (onClick)="goBack()">
+    </p-button>
+  </div>
+
+  <p-card>
+    <form [formGroup]="goiDichVuForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="tenGoi">Tên gói dịch vụ <span class="required">*</span></label>
+          <input type="text" 
+                 id="tenGoi"
+                 pInputText 
+                 formControlName="tenGoi"
+                 placeholder="Nhập tên gói dịch vụ"
+                 [class.ng-invalid]="isFieldInvalid('tenGoi')">
+          <small class="p-error" *ngIf="isFieldInvalid('tenGoi')">
+            {{ getFieldError('tenGoi') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="moTa">Mô tả <span class="required">*</span></label>
+          <textarea id="moTa"
+                    pInputTextarea 
+                    formControlName="moTa"
+                    placeholder="Nhập mô tả gói dịch vụ"
+                    rows="3"
+                    [class.ng-invalid]="isFieldInvalid('moTa')">
+          </textarea>
+          <small class="p-error" *ngIf="isFieldInvalid('moTa')">
+            {{ getFieldError('moTa') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="giaGoi">Giá tiền <span class="required">*</span></label>
+          <p-inputNumber id="giaGoi"
+                         formControlName="giaGoi"
+                         placeholder="Nhập giá gói dịch vụ"
+                         mode="currency" 
+                         currency="VND" 
+                         locale="vi-VN"
+                         [minFractionDigits]="0"
+                         [class.ng-invalid]="isFieldInvalid('giaGoi')">
+          </p-inputNumber>
+          <small class="p-error" *ngIf="isFieldInvalid('giaGoi')">
+            {{ getFieldError('giaGoi') }}
+          </small>
+        </div>
+
+        <div class="form-field">
+          <label for="phuongThucThanhToan">Phương thức thanh toán</label>
+          <input type="text" 
+                 id="phuongThucThanhToan"
+                 pInputText 
+                 formControlName="phuongThucThanhToan"
+                 placeholder="Nhập phương thức thanh toán">
+        </div>
+
+        <div class="form-field">
+          <label for="chiPhiPhatSinh">Chi phí phát sinh</label>
+          <input type="text" 
+                 id="chiPhiPhatSinh"
+                 pInputText 
+                 formControlName="chiPhiPhatSinh"
+                 placeholder="Nhập chi phí phát sinh">
+        </div>
+      </div>
+
+      <div class="form-actions" *ngIf="!isViewMode">
+        <p-button type="button" 
+                  label="Hủy" 
+                  styleClass="p-button-text"
+                  (onClick)="goBack()">
+        </p-button>
+        <p-button type="submit" 
+                  [label]="isEditMode ? 'Cập nhật gói dịch vụ' : 'Thêm gói dịch vụ'"
+                  [loading]="loading"
+                  styleClass="p-button-success">
+        </p-button>
+      </div>
+    </form>
+  </p-card>
+
+  <!-- Phần quản lý dịch vụ trong gói dịch vụ, chỉ hiển thị nếu đang ở chế độ xem hoặc chỉnh sửa -->
+  <div class="services-section" *ngIf="goiDichVuId && (isViewMode || isEditMode)">
+    <h3>Danh sách dịch vụ trong gói</h3>
+    
+    <!-- Form thêm dịch vụ vào gói -->
+    <div class="add-service-form" *ngIf="isEditMode">
+      <h4>Thêm dịch vụ vào gói</h4>
+      <div class="add-service-inputs">
+        <p-dropdown [options]="availableServices" 
+                    [(ngModel)]="selectedService"
+                    optionLabel="tenDichVu" 
+                    optionValue="id"
+                    placeholder="Chọn dịch vụ để thêm vào gói"
+                    [filter]="true" 
+                    filterBy="tenDichVu"
+                    [showClear]="true"
+                    styleClass="service-dropdown">
+          <ng-template let-service pTemplate="item">
+            <div class="service-option">
+              <div>{{ service.tenDichVu }}</div>
+              <div class="service-price">{{ formatCurrency(service.giaTien) }}</div>
+            </div>
+          </ng-template>
+        </p-dropdown>
+        
+        <!-- Thêm dropdown để chọn loại dịch vụ -->
+        <div class="service-type-selection">
+          <p-dropdown [options]="serviceTypes" 
+                      [(ngModel)]="selectedServiceType"
+                      optionLabel="label" 
+                      optionValue="value"
+                      placeholder="Chọn loại dịch vụ">
+          </p-dropdown>
+        </div>
+        
+        <p-button label="Thêm dịch vụ" 
+                  icon="pi pi-plus" 
+                  (onClick)="addServiceToPackage()"
+                  [disabled]="!selectedService || !selectedServiceType"
+                  styleClass="p-button-success">
+        </p-button>
+      </div>
+    </div>
+    
+    <!-- Bảng danh sách dịch vụ -->
+    <p-card>
+      <div class="services-tabs">
+        <p-tabView>
+          <p-tabPanel header="Dịch vụ chính ({{getServiceCountByType('dichvuchinh')}})" leftIcon="pi pi-star">
+            <p-table [value]="getServicesByType('dichvuchinh')" 
+                     [loading]="servicesLoading" 
+                     styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>STT</th>
+                  <th>Tên dịch vụ</th>
+                  <th>Mô tả</th>
+                  <th>Giá tiền</th>
+                  <th>Thời gian hoàn thành</th>
+                  <th *ngIf="isEditMode">Thao tác</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-service let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ service.tenDichVu }}</td>
+                  <td>{{ service.moTa }}</td>
+                  <td>{{ formatCurrency(service.giaTien) }}</td>
+                  <td>{{ service.deliveryTime }} ngày</td>
+                  <td *ngIf="isEditMode">
+                    <p-button icon="pi pi-trash" 
+                              pTooltip="Xóa khỏi gói"
+                              tooltipPosition="top"
+                              styleClass="p-button-text p-button-danger"
+                              (onClick)="removeServiceFromPackage(service, 'dichvuchinh')">
+                    </p-button>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td [attr.colspan]="isEditMode ? 6 : 5" class="text-center">
+                    Chưa có dịch vụ chính nào trong gói
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-tabPanel>
+
+          <p-tabPanel header="Dịch vụ thêm ({{getServiceCountByType('dichvuthem')}})" leftIcon="pi pi-plus-circle">
+            <p-table [value]="getServicesByType('dichvuthem')" 
+                     [loading]="servicesLoading" 
+                     styleClass="p-datatable-sm">
+              <!-- Tương tự như trên nhưng cho dịch vụ thêm -->
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>STT</th>
+                  <th>Tên dịch vụ</th>
+                  <th>Mô tả</th>
+                  <th>Giá tiền</th>
+                  <th>Thời gian hoàn thành</th>
+                  <th *ngIf="isEditMode">Thao tác</th>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="body" let-service let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ service.tenDichVu }}</td>
+                  <td>{{ service.moTa }}</td>
+                  <td>{{ formatCurrency(service.giaTien) }}</td>
+                  <td>{{ service.deliveryTime }} ngày</td>
+                  <td *ngIf="isEditMode">
+                    <p-button icon="pi pi-trash" 
+                              pTooltip="Xóa khỏi gói"
+                              tooltipPosition="top"
+                              styleClass="p-button-text p-button-danger"
+                              (onClick)="removeServiceFromPackage(service, 'dichvuthem')">
+                    </p-button>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td [attr.colspan]="isEditMode ? 6 : 5" class="text-center">
+                    Chưa có dịch vụ thêm nào trong gói
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-tabPanel>
+
+          <!-- Thêm lại tab nội dung đặc điểm -->
+          <p-tabPanel header="Nội dung đặc điểm ({{getServiceCountByType('noiDungDacDiem')}})" leftIcon="pi pi-list">
+            <p-table [value]="getServicesByType('noiDungDacDiem')" 
+                     [loading]="servicesLoading" 
+                     styleClass="p-datatable-sm">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th>STT</th>
+                  <th>Tên đặc điểm</th>
+                  <th>Mô tả</th>
+                  <th>Giá tiền</th>
+                  <th>Thời gian hoàn thành</th>
+                  <th *ngIf="isEditMode">Thao tác</th>
+                </tr>
+              </ng-template>
+              
+              <ng-template pTemplate="body" let-service let-rowIndex="rowIndex">
+                <tr>
+                  <td>{{ rowIndex + 1 }}</td>
+                  <td>{{ service.tenDichVu }}</td>
+                  <td>{{ service.moTa }}</td>
+                  <td>{{ formatCurrency(service.giaTien) }}</td>
+                  <td>{{ service.deliveryTime }} ngày</td>
+                  <td *ngIf="isEditMode">
+                    <p-button icon="pi pi-trash" 
+                              pTooltip="Xóa khỏi gói"
+                              tooltipPosition="top"
+                              styleClass="p-button-text p-button-danger"
+                              (onClick)="removeServiceFromPackage(service, 'noiDungDacDiem')">
+                    </p-button>
+                  </td>
+                </tr>
+              </ng-template>
+
+              <ng-template pTemplate="emptymessage">
+                <tr>
+                  <td [attr.colspan]="isEditMode ? 6 : 5" class="text-center">
+                    Chưa có nội dung đặc điểm nào trong gói
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </p-tabPanel>
+        </p-tabView>
+      </div>
+    </p-card>
+
+    <!-- Tổng giá trị gói dịch vụ -->
+    <div class="total-section">
+      <p-card>
+        <div class="total-content">
+          <div class="total-row">
+            <span class="total-label">Giá gói dịch vụ:</span>
+            <span class="total-value">{{ formatCurrency(calculateTotalPackagePrice()) }}</span>
+          </div>
+          <div class="total-row">
+            <span class="total-label">Tổng giá trị dịch vụ:</span>
+            <span class="total-value">{{ formatCurrency(calculateTotalServicesPrice()) }}</span>
+          </div>
+          <div class="total-row grand-total">
+            <span class="total-label">Tổng giá trị:</span>
+            <span class="total-value">{{ formatCurrency(calculateTotalPrice()) }}</span>
+          </div>
+        </div>
+      </p-card>
+    </div>
+  </div>
+</div>

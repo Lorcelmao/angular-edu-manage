@@ -1,0 +1,76 @@
+.service-list {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    h2 {
+      color: #2c3e50;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+
+      .search-box {
+        .search-input {
+          width: 300px;
+        }
+      }
+    }
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 0.25rem;
+  }
+
+  ::ng-deep {
+    .p-datatable {
+      .p-datatable-tbody > tr > td {
+        vertical-align: top;
+      }
+    }
+  }
+}
+
+.service-description {
+  max-height: 80px;
+  overflow-y: auto;
+
+  .description-content {
+    font-family: inherit;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: inherit;
+    background: transparent;
+    border: none;
+    padding: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-list {
+    .header-section {
+      flex-direction: column;
+      align-items: stretch;
+
+      .header-actions {
+        justify-content: center;
+
+        .search-box .search-input {
+          width: 100%;
+          min-width: 250px;
+        }
+      }
+    }
+  }
+}

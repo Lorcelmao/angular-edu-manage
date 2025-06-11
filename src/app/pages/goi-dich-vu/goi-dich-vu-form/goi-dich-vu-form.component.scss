@@ -1,0 +1,151 @@
+.goi-dich-vu-form {
+  .header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    h2 {
+      margin: 0;
+      font-size: 1.75rem;
+    }
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    label {
+      font-weight: 500;
+      .required {
+        color: red;
+      }
+    }
+
+    .field-help {
+      font-size: 0.875rem;
+      color: #6c757d;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .services-section {
+    margin-top: 2rem;
+
+    h3 {
+      margin-bottom: 1rem;
+      font-size: 1.25rem;
+    }
+
+    .add-service-form {
+      margin-bottom: 1.5rem;
+      background-color: #f8f9fa;
+      padding: 1rem;
+      border-radius: 4px;
+      
+      h4 {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+        color: #495057;
+      }
+      
+      .add-service-inputs {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        flex-wrap: wrap;
+        
+        .service-dropdown {
+          flex: 2;
+          min-width: 200px;
+        }
+        
+        .service-type-dropdown {
+          flex: 1;
+          min-width: 150px;
+        }
+        
+        p-button {
+          flex-shrink: 0;
+        }
+      }
+    }
+
+    .text-center {
+      text-align: center;
+    }
+    
+    .text-right {
+      text-align: right;
+    }
+    
+    .font-bold {
+      font-weight: bold;
+    }
+  }
+
+  .services-tabs {
+    margin-top: 1.5rem;
+    
+    :host ::ng-deep {
+      .p-tabview-nav {
+        li {
+          .p-tabview-nav-link {
+            .p-tabview-left-icon {
+              margin-right: 0.5rem;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .total-section {
+    margin-top: 2rem;
+    
+    .total-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 1rem;
+    }
+    
+    .grand-total {
+      font-weight: bold;
+      font-size: 1.25rem;
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid #dee2e6;
+    }
+  }
+
+  .service-option {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    
+    .service-price {
+      font-weight: bold;
+    }
+  }
+}
