@@ -13,17 +13,17 @@ import { ErrorHandlerService } from '../../../services/error-handler.service';
 })
 export class GoiDichVuListComponent implements OnInit {
   goiDichVus: GoiDichVuResponse[] = [];
-  filteredGoiDichVus: GoiDichVuResponse[] = []; // Nếu bạn đang sử dụng cục bộ
+  filteredGoiDichVus: GoiDichVuResponse[] = []; 
   loading: boolean = false;
   searchValue: string = '';
   
-  // Thuộc tính phân trang
+  
   totalRecords: number = 0;
   first: number = 0;
   rows: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 50];
   currentPage: number = 1;
-  Math = Math; // Để sử dụng Math trong template
+  Math = Math; 
 
   constructor(
     private goiDichVuService: GoiDichVuService,
@@ -46,7 +46,7 @@ export class GoiDichVuListComponent implements OnInit {
       .subscribe({
         next: (response: ApiResponse<GoiDichVuResponse[]>) => {
           this.goiDichVus = response.data;
-          this.filteredGoiDichVus = response.data; // Nếu bạn đang sử dụng cục bộ
+          this.filteredGoiDichVus = response.data; 
           this.totalRecords = response.countItems || 0;
           this.loading = false;
           
@@ -91,7 +91,7 @@ export class GoiDichVuListComponent implements OnInit {
     this.loadGoiDichVus();
   }
 
-  // Phương thức phụ trợ cho phân trang tùy chỉnh
+  
   goToPage(page: number): void {
     if (page < 1 || page > this.getTotalPages()) return;
     
@@ -125,7 +125,7 @@ export class GoiDichVuListComponent implements OnInit {
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
 
-  // Giữ lại các phương thức hiện có
+  
   createGoiDichVu() {
     this.router.navigate(['/goi-dich-vu/create']);
   }
@@ -158,63 +158,73 @@ export class GoiDichVuListComponent implements OnInit {
   }
 
   formatCurrency(value: number | null | undefined): string {
-    // Giữ nguyên mã hiện tại
+    
     if (value === null || value === undefined) {
       return '0 VNĐ';
     }
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' VNĐ';
   }
 
-  getServiceTooltip(service: ServiceItem): string {
-    // Giữ nguyên mã hiện tại
-    return `${service.tenDichVu}\nGiá: ${this.formatCurrency(service.giaTien)}\nThời gian: ${service.deliveryTime} ngày\n${service.moTa}`;
+  
+  convertMillisToDay(milliseconds: number | null | undefined): number {
+    if (milliseconds === null || milliseconds === undefined) {
+      return 0;
+    }
+    
+    return Math.round((milliseconds / 86400000) * 100) / 100; 
   }
 
-  // Tính tổng thời gian cung cấp dịch vụ (lấy thời gian cao nhất trong các dịch vụ)
+  
   calculateTotalDeliveryTime(goiDichVu: GoiDichVuResponse): number {
-    let maxTime = 0;
+    let maxTimeMillis = 0;
     
-    // Tính tổng thời gian từ các dịch vụ chính
+    
     if (goiDichVu.dichvuchinh?.length) {
       goiDichVu.dichvuchinh.forEach(service => {
-        if (service.deliveryTime > maxTime) {
-          maxTime = service.deliveryTime;
+        if (service.deliveryTime > maxTimeMillis) {
+          maxTimeMillis = service.deliveryTime;
         }
       });
     }
     
-    // Tính tổng thời gian từ các dịch vụ thêm
+    
     if (goiDichVu.dichvuthem?.length) {
       goiDichVu.dichvuthem.forEach(service => {
-        if (service.deliveryTime > maxTime) {
-          maxTime = service.deliveryTime;
+        if (service.deliveryTime > maxTimeMillis) {
+          maxTimeMillis = service.deliveryTime;
         }
       });
     }
     
-    // Tính tổng thời gian từ các nội dung đặc điểm
+    
     if (goiDichVu.noiDungDacDiem?.length) {
       goiDichVu.noiDungDacDiem.forEach(service => {
-        if (service.deliveryTime > maxTime) {
-          maxTime = service.deliveryTime;
+        if (service.deliveryTime > maxTimeMillis) {
+          maxTimeMillis = service.deliveryTime;
         }
       });
     }
     
-    return maxTime;
+    
+    return this.convertMillisToDay(maxTimeMillis);
   }
 
-  // Định dạng ngày tháng kèm giờ phút giây
+  getServiceTooltip(service: ServiceItem): string {
+    const deliveryTimeInDays = this.convertMillisToDay(service.deliveryTime);
+    return `${service.tenDichVu}\nGiá: ${this.formatCurrency(service.giaTien)}\nThời gian: ${deliveryTimeInDays}\n${service.moTa}`;
+  }
+
+  
   formatDate(dateString: string | undefined): string {
     if (!dateString) return 'N/A';
     
     const date = new Date(dateString);
     
-    // Format: DD/MM/YYYY HH:MM:SS
+    
     return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
   }
 
-  // Đếm tổng số dịch vụ trong gói
+  
   getTotalServiceCount(goiDichVu: GoiDichVuResponse): number {
     let count = 0;
     count += goiDichVu.dichvuchinh?.length || 0;

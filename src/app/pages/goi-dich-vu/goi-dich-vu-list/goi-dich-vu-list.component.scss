@@ -62,7 +62,7 @@
   gap: 0.25rem;
 }
 
-// Table header styling
+
 .table-header {
   display: flex;
   justify-content: flex-end;
@@ -76,7 +76,7 @@
   }
 }
 
-// Custom paginator styling
+
 .custom-paginator {
   display: flex;
   justify-content: space-between;
@@ -119,7 +119,7 @@
 }
 
 :host ::ng-deep {
-  // Điều chỉnh kích thước bảng lớn hơn một chút
+  
   .p-datatable-sm {
     .p-datatable-thead > tr > th,
     .p-datatable-tbody > tr > td {
@@ -135,7 +135,7 @@
     }
   }
 
-  // Điều chỉnh kích thước chip lớn hơn một chút
+  
   .small-chip {
     height: 24px !important;
 
@@ -144,7 +144,7 @@
     }
   }
 
-  // Style cho từng loại chip
+  
   .main-service-chip {
     background-color: #e3f2fd;
     color: #0288d1;
@@ -160,7 +160,7 @@
     color: #ffa000;
   }
 
-  // Điều chỉnh nút action lớn hơn một chút
+  
   .action-buttons {
     display: flex;
     justify-content: center;
@@ -175,12 +175,12 @@
     }
   }
 
-  // Style cho p-dropdown trong phân trang
+  
   .p-dropdown.page-size-dropdown {
     min-width: 5rem;
   }
 
-  // Style cho paginator
+  
   .p-paginator {
     .p-paginator-pages {
       .p-paginator-page {
@@ -207,10 +207,10 @@
     }
   }
 
-  // Styling cho các tab theo màu chip
+  
   .p-tabview {
     .p-tabview-nav {
-      li:nth-child(1) { // Dịch vụ chính - tab đầu tiên
+      li:nth-child(1) { 
         .p-tabview-nav-link {
           color: #0288d1;
           
@@ -230,7 +230,7 @@
         }
       }
       
-      li:nth-child(2) { // Dịch vụ thêm - tab thứ hai
+      li:nth-child(2) { 
         .p-tabview-nav-link {
           color: #388e3c;
           
@@ -250,7 +250,7 @@
         }
       }
       
-      li:nth-child(3) { // Nội dung đặc điểm - tab thứ ba
+      li:nth-child(3) { 
         .p-tabview-nav-link {
           color: #ffa000;
           
@@ -273,4 +273,3 @@
   }
 }
 
-// Style cho text bị cắt ngắn - thêm dấu "..."

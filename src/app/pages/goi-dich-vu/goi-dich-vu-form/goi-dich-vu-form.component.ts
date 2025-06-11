@@ -27,9 +27,9 @@ export class GoiDichVuFormComponent implements OnInit {
   goiDichVuId: string | null = null;
   pageTitle: string = 'Thêm gói dịch vụ';
   
-  // Danh sách dịch vụ trong gói
+  
   services: ServiceResponse[] = [];
-  // Danh sách dịch vụ chưa thêm vào gói
+  
   availableServices: ServiceResponse[] = [];
   selectedService: string = '';
   serviceTypes = [
@@ -39,7 +39,7 @@ export class GoiDichVuFormComponent implements OnInit {
   ];
   servicesLoading: boolean = false;
 
-  // Add the missing goiDichVu property
+  
   goiDichVu: GoiDichVuResponse | null = null;
 
   constructor(
@@ -62,17 +62,17 @@ export class GoiDichVuFormComponent implements OnInit {
   }
 
   ngOnInit() {
-    // Lấy URL hiện tại
+    
     const url = this.router.url;
     
-    // Kiểm tra mode từ URL
+    
     this.isViewMode = url.includes('/view');
     this.isEditMode = url.includes('/edit');
     
-    // Lấy ID từ route params
+    
     this.goiDichVuId = this.route.snapshot.paramMap.get('id');
     
-    // Cập nhật tiêu đề và trạng thái form
+    
     if (this.isEditMode) {
       this.pageTitle = 'Chỉnh sửa gói dịch vụ';
     } else if (this.isViewMode) {
@@ -80,7 +80,7 @@ export class GoiDichVuFormComponent implements OnInit {
       this.goiDichVuForm.disable();
     }
     
-    // Nếu có ID, load dữ liệu gói dịch vụ
+    
     if (this.goiDichVuId) {
       this.loadGoiDichVu();
       this.loadServicesInPackage();
@@ -96,7 +96,7 @@ export class GoiDichVuFormComponent implements OnInit {
     this.loading = true;
     this.goiDichVuService.getGoiDichVuById(this.goiDichVuId).subscribe({
       next: (response: BaseResponse<GoiDichVuResponse>) => {
-        this.goiDichVu = response.data; // Store the full goi dich vu data
+        this.goiDichVu = response.data; 
         this.goiDichVuForm.patchValue({
           tenGoi: this.goiDichVu.tenGoi,
           moTa: this.goiDichVu.moTa,
@@ -209,7 +209,7 @@ export class GoiDichVuFormComponent implements OnInit {
       case 'dichvuthem':
         return this.goiDichVu.dichvuthem || [];
       case 'noiDungDacDiem':
-        return this.goiDichVu.noiDungDacDiem || []; // Thêm lại nội dung đặc điểm
+        return this.goiDichVu.noiDungDacDiem || []; 
       default:
         return [];
     }
@@ -228,12 +228,13 @@ export class GoiDichVuFormComponent implements OnInit {
     this.goiDichVuService.addServiceToPackage(
       this.goiDichVuId, 
       this.selectedService
-      // Đã bỏ tham số selectedServiceType
     ).subscribe({
       next: (response) => {
         this.errorHandler.handleSuccess('Thành công', 'Thêm dịch vụ vào gói thành công');
         this.selectedService = '';
+        
         this.loadGoiDichVu();
+        this.loadAvailableServices(); 
       },
       error: (error) => {
         this.errorHandler.handleError(error, 'thêm dịch vụ vào gói');
@@ -252,7 +253,7 @@ export class GoiDichVuFormComponent implements OnInit {
         this.goiDichVuService.removeServiceFromPackage(this.goiDichVuId!, service.id, serviceType).subscribe({
           next: (response) => {
             this.errorHandler.handleSuccess('Thành công', 'Xóa dịch vụ khỏi gói thành công');
-            this.loadGoiDichVu(); // Reload to update all service lists
+            this.loadGoiDichVu(); 
           },
           error: (error) => {
             this.errorHandler.handleError(error, 'xóa dịch vụ khỏi gói');
@@ -311,12 +312,39 @@ export class GoiDichVuFormComponent implements OnInit {
   }
 
   calculateTotalPackagePrice(): number {
-    // Sửa để sử dụng giaGoi thay vì giaTien
+    
     const basePrice = this.goiDichVuForm.get('giaGoi')?.value || 0;
     return Number(basePrice);
   }
 
   calculateTotalServicesPrice(): number {
     return this.services.reduce((total, service) => total + service.giaTien, 0);
+  }
+
+  
+  convertMillisToDay(milliseconds: number | null | undefined): number {
+    if (milliseconds === null || milliseconds === undefined) {
+      return 0;
+    }
+    
+    return Math.round((milliseconds / 86400000) * 100) / 100; 
+  }
+
+  
+  calculateTotalDeliveryTime(): number {
+    if (!this.goiDichVu) return 0;
+    
+    let maxTimeMillis = 0;
+    
+    if (this.goiDichVu.dichvuchinh?.length) {
+      this.goiDichVu.dichvuchinh.forEach(service => {
+        if (service.deliveryTime > maxTimeMillis) {
+          maxTimeMillis = service.deliveryTime;
+        }
+      });
+    }
+    
+    
+    return this.convertMillisToDay(maxTimeMillis);
   }
 }

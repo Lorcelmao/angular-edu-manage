@@ -34,6 +34,16 @@ export class SidebarComponent implements OnInit {
         label: 'Quản lý học sinh',
         icon: 'pi pi-user',
         routerLink: '/students'
+      },
+      {
+        label: 'Quản lý dịch vụ',
+        icon: 'pi pi-cog',
+        routerLink: '/services'
+      },
+      {
+        label: 'Quản lý gói dịch vụ',
+        icon: 'pi pi-briefcase',
+        routerLink: '/goi-dich-vu'
       }
     ];
   }

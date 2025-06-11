@@ -38,7 +38,7 @@
           </small>
         </div>
 
-        <!-- Thay thế phần input giá gói dịch vụ -->
+        
         <div class="form-field">
           <label for="giaGoi">Giá tiền <span class="required">*</span></label>
           <input type="number" 
@@ -86,11 +86,11 @@
     </form>
   </p-card>
 
-  <!-- Phần quản lý dịch vụ trong gói dịch vụ, chỉ hiển thị nếu đang ở chế độ xem hoặc chỉnh sửa -->
+  
   <div class="services-section" *ngIf="goiDichVuId && (isViewMode || isEditMode)">
     <h3>Danh sách dịch vụ trong gói</h3>
     
-    <!-- Form thêm dịch vụ vào gói -->
+    
     <div class="add-service-form" *ngIf="isEditMode">
       <h4>Thêm dịch vụ vào gói</h4>
       <div class="add-service-inputs">
@@ -120,7 +120,7 @@
       </div>
     </div>
     
-    <!-- Bảng danh sách dịch vụ -->
+    
     <p-card>
       <div class="services-tabs">
         <p-tabView>
@@ -145,7 +145,7 @@
                   <td>{{ service.tenDichVu }}</td>
                   <td>{{ service.moTa }}</td>
                   <td>{{ formatCurrency(service.giaTien) }}</td>
-                  <td>{{ service.deliveryTime }} ngày</td>
+                  <td>{{ convertMillisToDay(service.deliveryTime) }}</td>
                   <td *ngIf="isEditMode">
                     <p-button icon="pi pi-trash" 
                               pTooltip="Xóa khỏi gói"
@@ -171,7 +171,7 @@
             <p-table [value]="getServicesByType('dichvuthem')" 
                      [loading]="servicesLoading" 
                      styleClass="p-datatable-sm">
-              <!-- Tương tự như trên nhưng cho dịch vụ thêm -->
+              
               <ng-template pTemplate="header">
                 <tr>
                   <th>STT</th>
@@ -189,7 +189,7 @@
                   <td>{{ service.tenDichVu }}</td>
                   <td>{{ service.moTa }}</td>
                   <td>{{ formatCurrency(service.giaTien) }}</td>
-                  <td>{{ service.deliveryTime }} ngày</td>
+                  <td>{{ convertMillisToDay(service.deliveryTime) }}</td>
                   <td *ngIf="isEditMode">
                     <p-button icon="pi pi-trash" 
                               pTooltip="Xóa khỏi gói"
@@ -211,7 +211,7 @@
             </p-table>
           </p-tabPanel>
 
-          <!-- Thêm lại tab nội dung đặc điểm -->
+          
           <p-tabPanel header="Nội dung đặc điểm ({{getServiceCountByType('noiDungDacDiem')}})" leftIcon="pi pi-list">
             <p-table [value]="getServicesByType('noiDungDacDiem')" 
                      [loading]="servicesLoading" 
@@ -233,7 +233,7 @@
                   <td>{{ service.tenDichVu }}</td>
                   <td>{{ service.moTa }}</td>
                   <td>{{ formatCurrency(service.giaTien) }}</td>
-                  <td>{{ service.deliveryTime }} ngày</td>
+                  <td>{{ convertMillisToDay(service.deliveryTime) }}</td>
                   <td *ngIf="isEditMode">
                     <p-button icon="pi pi-trash" 
                               pTooltip="Xóa khỏi gói"
@@ -258,7 +258,7 @@
       </div>
     </p-card>
 
-    <!-- Tổng giá trị gói dịch vụ -->
+    
     <div class="total-section">
       <p-card>
         <div class="total-content">
@@ -270,7 +270,11 @@
             <span class="total-label">Tổng giá trị dịch vụ:</span>
             <span class="total-value">{{ formatCurrency(calculateTotalServicesPrice()) }}</span>
           </div>
-          <!-- Bỏ dòng tổng giá trị ở dưới cùng -->
+          <div class="total-row">
+            <span class="total-label">Thời gian hoàn thành:</span>
+            <span class="total-value">{{ calculateTotalDeliveryTime() }}</span>
+          </div>
+          
         </div>
       </p-card>
     </div>

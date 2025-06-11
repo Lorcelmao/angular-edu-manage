@@ -88,11 +88,11 @@ const routes: Routes = [
         component: ServiceFormComponent
       },
       {
-        path: 'services/:id/edit',
+        path: 'services/edit/:id',
         component: ServiceFormComponent
       },
       {
-        path: 'services/:id/view',
+        path: 'services/view/:id',
         component: ServiceFormComponent
       },
       // Gói dịch vụ routes

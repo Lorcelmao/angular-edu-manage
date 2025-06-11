@@ -88,37 +88,13 @@ export class GoiDichVuService {
 
   // Lấy danh sách dịch vụ chưa thêm vào gói dịch vụ
   getServicesNotInPackage(id: string): Observable<BaseResponse<ServiceResponse[]>> {
-    // First, get all services
-    return this.getAllServices().pipe(
-      // Then get services in the package and filter them out
-      switchMap(allServicesResponse => {
-        return this.getGoiDichVuById(id).pipe(
-          map(packageResponse => {
-            if (!packageResponse || !packageResponse.data) {
-              return allServicesResponse;
-            }
-            
-            const packageServices = [
-              ...(packageResponse.data.dichvuchinh || []),
-              ...(packageResponse.data.dichvuthem || []),
-              ...(packageResponse.data.noiDungDacDiem || [])
-            ];
-            
-            const packageServiceIds = packageServices.map(s => s.id);
-            
-            const availableServices = allServicesResponse.data.filter(
-              service => !packageServiceIds.includes(service.id)
-            );
-            
-            return {
-              code: allServicesResponse.code,
-              message: allServicesResponse.message,
-              data: availableServices
-            };
-          })
-        );
-      })
-    );
+    // Sử dụng API mới để lấy trực tiếp dịch vụ chưa thêm vào gói
+    const url = `${environment.api}/api/goi-dich-vu-dich-vu/goi-dich-vu-chua-them`;
+    let params = new HttpParams().set('id', id);
+    
+    console.log('Lấy danh sách dịch vụ chưa thêm vào gói:', { id, url });
+    
+    return this.http.get<BaseResponse<ServiceResponse[]>>(url, { params });
   }
 
   // Add service to package with specified type
