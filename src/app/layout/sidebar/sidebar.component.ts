@@ -15,26 +15,26 @@ export class SidebarComponent implements OnInit {
 
   ngOnInit() {
     this.menuItems = [
-      {
-        label: 'Dashboard',
-        icon: 'pi pi-home',
-        routerLink: '/dashboard'
-      },
-      {
-        label: 'Quản lý trường học',
-        icon: 'pi pi-building',
-        routerLink: '/schools'
-      },
-      {
-        label: 'Quản lý lớp học',
-        icon: 'pi pi-users',
-        routerLink: '/classes'
-      },
-      {
-        label: 'Quản lý học sinh',
-        icon: 'pi pi-user',
-        routerLink: '/students'
-      },
+      // {
+      //   label: 'Dashboard',
+      //   icon: 'pi pi-home',
+      //   routerLink: '/dashboard'
+      // },
+      // {
+      //   label: 'Quản lý trường học',
+      //   icon: 'pi pi-building',
+      //   routerLink: '/schools'
+      // },
+      // {
+      //   label: 'Quản lý lớp học',
+      //   icon: 'pi pi-users',
+      //   routerLink: '/classes'
+      // },
+      // {
+      //   label: 'Quản lý học sinh',
+      //   icon: 'pi pi-user',
+      //   routerLink: '/students'
+      // },
       {
         label: 'Quản lý dịch vụ',
         icon: 'pi pi-cog',

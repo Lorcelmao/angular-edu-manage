@@ -16,41 +16,42 @@ export class HeaderComponent implements OnInit {
     
     
     this.items = [
+      // {
+      //   label: 'Trang chủ',
+      //   icon: 'pi pi-home',
+      //   routerLink: '/dashboard'
+      // },
+      // {
+      //   label: 'Quản lý',
+      //   icon: 'pi pi-cog',
+      //   items: [
+      //     // {
+      //     //   label: 'Trường học',
+      //     //   icon: 'pi pi-building',
+      //     //   routerLink: '/schools'
+      //     // },
+      //     // {
+      //     //   label: 'Lớp học',
+      //     //   icon: 'pi pi-users',
+      //     //   routerLink: '/classes'
+      //     // },
+      //     // {
+      //     //   label: 'Học sinh',
+      //     //   icon: 'pi pi-user',
+      //     //   routerLink: '/students'
+      //     // },
+
+      //   ]
+      // }
       {
-        label: 'Trang chủ',
-        icon: 'pi pi-home',
-        routerLink: '/dashboard'
+        label: 'Dịch vụ',
+        icon: 'pi pi-cog',
+        routerLink: '/services'
       },
       {
-        label: 'Quản lý',
-        icon: 'pi pi-cog',
-        items: [
-          {
-            label: 'Trường học',
-            icon: 'pi pi-building',
-            routerLink: '/schools'
-          },
-          {
-            label: 'Lớp học',
-            icon: 'pi pi-users',
-            routerLink: '/classes'
-          },
-          {
-            label: 'Học sinh',
-            icon: 'pi pi-user',
-            routerLink: '/students'
-          },
-          {
-          label: 'Dịch vụ',
-          icon: 'pi pi-cog',
-          routerLink: '/services'
-          },
-          {
-            label: 'Gói dịch vụ',
-            icon: 'pi pi-briefcase',
-            routerLink: '/goi-dich-vu'
-          }
-        ]
+        label: 'Gói dịch vụ',
+        icon: 'pi pi-briefcase',
+        routerLink: '/goi-dich-vu'
       }
     ];
   }

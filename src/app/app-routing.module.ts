@@ -18,9 +18,14 @@ const routes: Routes = [
     path: '',
     component: MainLayoutComponent,
     children: [
+      // {
+      //   path: '',
+      //   redirectTo: '/dashboard',
+      //   pathMatch: 'full'
+      // },
       {
         path: '',
-        redirectTo: '/dashboard',
+        redirectTo: '/services',
         pathMatch: 'full'
       },
       {
