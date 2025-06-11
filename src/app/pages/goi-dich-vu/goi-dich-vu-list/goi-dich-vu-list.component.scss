@@ -41,7 +41,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  max-width: 350px;
+  max-width: 100%;
+  overflow: visible;
 }
 
 .service-category {
@@ -60,6 +61,13 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.25rem;
+}
+
+.service-chips-compact {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.35rem;
+  max-width: 100%;
 }
 
 
@@ -138,9 +146,16 @@
   
   .small-chip {
     height: 24px !important;
+    width: 100%;
+    overflow: hidden;
 
     .p-chip-text {
       font-size: 0.85rem !important;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: block;
     }
   }
 
@@ -269,6 +284,51 @@
           color: #ffa000;
         }
       }
+    }
+  }
+
+  // Đảm bảo chip không bị tràn
+  .p-chip {
+    max-width: 100%;
+    overflow: hidden;
+  }
+}
+
+// Chỉnh nút "xem thêm"
+.expand-button, .collapse-button {
+  grid-column: 1 / -1; // Chiếm toàn bộ chiều rộng
+  justify-self: center;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 12px;
+  text-align: center;
+  width: auto;
+  min-height: 28px;
+}
+
+.expand-button {
+  color: #2196F3; // Màu xanh cho nút xem thêm
+  
+  &:hover {
+    background-color: #e3f2fd;
+  }
+}
+
+.collapse-button {
+  color: #6c757d; // Màu xám cho nút thu gọn
+  
+  &:hover {
+    background-color: #f8f9fa;
+  }
+}
+
+// Điều chỉnh icon trong nút
+:host ::ng-deep {
+  .expand-button, .collapse-button {
+    .p-button-icon {
+      font-size: 0.8rem;
+      margin-right: 0.3rem;
     }
   }
 }

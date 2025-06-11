@@ -25,6 +25,9 @@ export class GoiDichVuListComponent implements OnInit {
   currentPage: number = 1;
   Math = Math; 
 
+  
+  expandedServicePackages: Set<string> = new Set<string>();
+
   constructor(
     private goiDichVuService: GoiDichVuService,
     private router: Router,
@@ -231,5 +234,48 @@ export class GoiDichVuListComponent implements OnInit {
     count += goiDichVu.dichvuthem?.length || 0;
     count += goiDichVu.noiDungDacDiem?.length || 0;
     return count;
+  }
+
+  
+  isServiceExpanded(packageId: string): boolean {
+    return this.expandedServicePackages.has(packageId);
+  }
+
+  
+  toggleServiceExpand(packageId: string, expand: boolean): void {
+    if (expand) {
+      this.expandedServicePackages.add(packageId);
+    } else {
+      this.expandedServicePackages.delete(packageId);
+    }
+  }
+
+  
+  hasManyServices(goiDichVu: GoiDichVuResponse): boolean {
+    return this.getTotalServiceCount(goiDichVu) > 4;
+  }
+
+  
+  getMainServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
+    if (!goiDichVu.dichvuchinh) return [];
+    return this.isServiceExpanded(goiDichVu.id) ? 
+      goiDichVu.dichvuchinh : 
+      goiDichVu.dichvuchinh.slice(0, 2);
+  }
+
+  
+  getAdditionalServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
+    if (!goiDichVu.dichvuthem) return [];
+    return this.isServiceExpanded(goiDichVu.id) ? 
+      goiDichVu.dichvuthem : 
+      goiDichVu.dichvuthem.slice(0, 2);
+  }
+
+  
+  getFeatureServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
+    if (!goiDichVu.noiDungDacDiem) return [];
+    return this.isServiceExpanded(goiDichVu.id) ? 
+      goiDichVu.noiDungDacDiem : 
+      [];  
   }
 }

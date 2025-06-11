@@ -43,14 +43,14 @@
       </div>
     </div>
 
-    <!-- Bảng không sử dụng paginator mặc định -->
+    
     <p-table [value]="filteredGoiDichVus" 
              [loading]="loading"
              [first]="first"
              [rows]="rows"
              styleClass="p-datatable-sm">
       
-      <!-- Cập nhật header với kích thước cột phù hợp hơn -->
+      
       <ng-template pTemplate="header">
         <tr>
           <th style="width: 4%">STT</th>
@@ -67,7 +67,7 @@
         </tr>
       </ng-template>
 
-      <!-- Cập nhật body với các cột bổ sung -->
+      
       <ng-template pTemplate="body" let-goiDichVu let-rowIndex="rowIndex">
         <tr>
           <td>{{ first + rowIndex + 1 }}</td>
@@ -90,26 +90,51 @@
           <td>{{ formatCurrency(goiDichVu.chiPhiPhatSinh || 0) }}</td>
           <td>{{ calculateTotalDeliveryTime(goiDichVu) }}</td>
           <td>
-            <!-- Hiển thị dịch vụ dưới dạng chip, thu gọn lại kích thước -->
             <div class="services-container">
               <div class="service-chips-compact">
-                <p-chip *ngFor="let service of goiDichVu.dichvuchinh?.slice(0, 2)" 
+                
+                <p-chip *ngFor="let service of getMainServices(goiDichVu)" 
                         [label]="service.tenDichVu" 
                         styleClass="main-service-chip small-chip"
                         [pTooltip]="getServiceTooltip(service)"
                         tooltipPosition="top">
                 </p-chip>
                 
-                <p-chip *ngFor="let service of goiDichVu.dichvuthem?.slice(0, 2)" 
+                
+                <p-chip *ngFor="let service of getAdditionalServices(goiDichVu)" 
                         [label]="service.tenDichVu"
                         styleClass="additional-service-chip small-chip"
                         [pTooltip]="getServiceTooltip(service)"
                         tooltipPosition="top">
                 </p-chip>
                 
-                <span class="more-services" *ngIf="getTotalServiceCount(goiDichVu) > 4">
-                  +{{ getTotalServiceCount(goiDichVu) - 4 }}
-                </span>
+                
+                <p-chip *ngFor="let service of getFeatureServices(goiDichVu)" 
+                        [label]="service.tenDichVu"
+                        styleClass="feature-service-chip small-chip"
+                        [pTooltip]="getServiceTooltip(service)"
+                        tooltipPosition="top">
+                </p-chip>
+                
+                
+                <button *ngIf="isServiceExpanded(goiDichVu.id)" 
+                        pButton 
+                        type="button" 
+                        label="Thu gọn" 
+                        icon="pi pi-chevron-up"
+                        class="p-button-text p-button-sm collapse-button"
+                        (click)="toggleServiceExpand(goiDichVu.id, false)">
+                </button>
+                
+                
+                <button *ngIf="!isServiceExpanded(goiDichVu.id) && hasManyServices(goiDichVu)" 
+                        pButton 
+                        type="button" 
+                        label="Xem thêm" 
+                        icon="pi pi-chevron-down"
+                        class="p-button-text p-button-sm expand-button"
+                        (click)="toggleServiceExpand(goiDichVu.id, true)">
+                </button>
               </div>
             </div>
           </td>
@@ -147,28 +172,28 @@
       </ng-template>
     </p-table>
 
-    <!-- Điều khiển phân trang tùy chỉnh -->
+    
     <div class="custom-paginator">
-      <!-- Thông tin trang -->
+      
       <div class="paginator-info">
         Hiển thị {{ first + 1 }} - {{ Math.min(first + rows, totalRecords) }} trong tổng số {{ totalRecords }} gói dịch vụ
       </div>
       
-      <!-- Điều khiển phân trang -->
+      
       <div class="paginator-controls">
-        <!-- Nút về đầu trang -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-double-left" 
                 [disabled]="currentPage === 1"
                 (click)="goToPage(1)"></button>
         
-        <!-- Nút về trang trước -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-left" 
                 [disabled]="currentPage === 1"
                 (click)="goToPage(currentPage - 1)"></button>
         
-        <!-- Các số trang -->
+        
         <div class="page-numbers">
           <ng-container *ngFor="let pageNum of getPageNumbers()">
             <button pButton type="button" 
@@ -178,13 +203,13 @@
           </ng-container>
         </div>
         
-        <!-- Nút đến trang sau -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-right" 
                 [disabled]="currentPage === getTotalPages()"
                 (click)="goToPage(currentPage + 1)"></button>
         
-        <!-- Nút đến trang cuối -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-double-right" 
                 [disabled]="currentPage === getTotalPages()"
