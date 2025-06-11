@@ -14,7 +14,6 @@ export class ServiceService {
   constructor(private http: HttpClient) { }
 
   getAllServices(keyword?: string, pageNumber: number = 1, pageSize: number = 10): Observable<ApiResponse<ServiceResponse[]>> {
-    // Make sure we're sending the correct parameters
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());

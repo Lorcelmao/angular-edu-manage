@@ -17,12 +17,7 @@ export class GoiDichVuService {
 
   constructor(private http: HttpClient) {}
 
-  // Lấy tất cả gói dịch vụ
-  // getAllGoiDichVu(): Observable<BaseResponse<GoiDichVuResponse[]>> {
-  //   return this.http.get<BaseResponse<GoiDichVuResponse[]>>(this.apiUrl);
-  // }
   getAllGoiDichVu(keyword?: string, pageNumber: number = 1, pageSize: number = 10): Observable<ApiResponse<GoiDichVuResponse[]>> {
-    // Xây dựng tham số truy vấn
     let params = new HttpParams()
       .set('pageNumber', pageNumber.toString())
       .set('pageSize', pageSize.toString());
@@ -36,45 +31,44 @@ export class GoiDichVuService {
       return this.http.get<ApiResponse<GoiDichVuResponse[]>>(this.apiUrl, { params });
   }
 
-  // Lấy chi tiết gói dịch vụ theo ID
+  
   getGoiDichVuById(id: string): Observable<BaseResponse<GoiDichVuResponse>> {
     return this.http.get<BaseResponse<GoiDichVuResponse>>(`${this.apiUrl}/${id}`);
   }
 
-  // Tạo gói dịch vụ mới
+  
   createGoiDichVu(goiDichVu: GoiDichVuRequest): Observable<BaseResponse<GoiDichVuResponse>> {
     return this.http.post<BaseResponse<GoiDichVuResponse>>(this.apiUrl, goiDichVu);
   }
 
-  // Cập nhật gói dịch vụ
+  
   updateGoiDichVu(id: string, goiDichVu: GoiDichVuUpdateRequest): Observable<BaseResponse<GoiDichVuResponse>> {
     return this.http.put<BaseResponse<GoiDichVuResponse>>(`${this.apiUrl}/${id}`, goiDichVu);
   }
 
-  // Xóa gói dịch vụ
+  
   deleteGoiDichVu(id: string): Observable<BaseResponse<any>> {
     return this.http.delete<BaseResponse<any>>(`${this.apiUrl}/${id}`);
   }
 
-  // Lấy tất cả dịch vụ
+  
   getAllServices(): Observable<BaseResponse<ServiceResponse[]>> {
     return this.http.get<BaseResponse<ServiceResponse[]>>(this.apiUrlDichVu);
   }
 
-  // Lấy danh sách dịch vụ trong gói dịch vụ
-  // Since the API already returns services with the package, we'll just extract them
+  
+  
   getServicesByPackageId(id: string): Observable<BaseResponse<ServiceResponse[]>> {
     return this.getGoiDichVuById(id).pipe(
       map(response => {
         if (!response || !response.data) {
           return { code: 0, message: 'No data', data: [] };
         }
-        
-        // Combine only dichvuchinh and dichvuthem, excluding noiDungDacDiem
+  
         const allServices = [
           ...(response.data.dichvuchinh || []),
           ...(response.data.dichvuthem || [])
-          // Removed noiDungDacDiem
+          
         ];
         
         return {
@@ -86,9 +80,8 @@ export class GoiDichVuService {
     );
   }
 
-  // Lấy danh sách dịch vụ chưa thêm vào gói dịch vụ
+  
   getServicesNotInPackage(id: string): Observable<BaseResponse<ServiceResponse[]>> {
-    // Sử dụng API mới để lấy trực tiếp dịch vụ chưa thêm vào gói
     const url = `${environment.api}/api/goi-dich-vu-dich-vu/goi-dich-vu-chua-them`;
     let params = new HttpParams().set('id', id);
     
@@ -97,28 +90,28 @@ export class GoiDichVuService {
     return this.http.get<BaseResponse<ServiceResponse[]>>(url, { params });
   }
 
-  // Add service to package with specified type
-  // addServiceToPackage(packageId: string, serviceId: string, serviceType: 'dichvuchinh' | 'dichvuthem' = 'dichvuchinh'): Observable<BaseResponse<any>> {
-  //   // Tạo payload đúng theo API documentation - chỉ gồm goiDichVuId và dichVuId
-  //   const body = {
-  //     goiDichVuId: packageId,
-  //     dichVuId: serviceId
-  //     // Không thêm loaiDichVu vì API không hỗ trợ trường này
-  //   };
+  
+  
+  
+  
+  
+  
+  
+  
     
-  //   console.log('Sending request to add service to package:', {
-  //     endpoint: this.apiUrlRelation,
-  //     body
-  //   });
+  
+  
+  
+  
     
-  //   return this.http.post<BaseResponse<any>>(this.apiUrlRelation, body);
-  // }
+  
+  
   addServiceToPackage(packageId: string, serviceId: string): Observable<BaseResponse<any>> {
-    // Chỉ gửi các trường API yêu cầu
+    
     const body = {
       goiDichVuId: packageId,
       dichVuId: serviceId
-      // Không thêm loaiDichVu vào body
+      
     };
     
     console.log('Sending request to add service to package:', {
@@ -129,12 +122,12 @@ export class GoiDichVuService {
     return this.http.post<BaseResponse<any>>(this.apiUrlRelation, body);
   }
 
-  // Remove service from package
+  
   removeServiceFromPackage(packageId: string, serviceId: string, serviceType?: string): Observable<BaseResponse<any>> {
-    // Vì API doc không chỉ rõ endpoint xóa, chúng ta sẽ dùng cách tiếp cận khác
-    // Thường sẽ là DELETE với params hoặc endpoint cụ thể
     
-    // Phương án 1: Dùng query params
+    
+    
+    
     let params = new HttpParams()
       .set('goiDichVuId', packageId)
       .set('dichVuId', serviceId);
@@ -145,8 +138,8 @@ export class GoiDichVuService {
     
     return this.http.delete<BaseResponse<any>>(`${this.apiUrlRelation}`, { params });
     
-    // Phương án 2 (dự phòng): Nếu API cần endpoint kiểu RESTful
-    // const endpoint = `${this.apiUrlRelation}/${packageId}/${serviceId}`;
-    // return this.http.delete<BaseResponse<any>>(endpoint);
+    
+    
+    
   }
 }
