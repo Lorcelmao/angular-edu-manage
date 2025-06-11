@@ -57,6 +57,46 @@
   }
 }
 
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+
+  .page-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+:host ::ng-deep {
+  .p-paginator {
+    .p-paginator-pages {
+      .p-paginator-page {
+        min-width: 2.5rem;
+        height: 2.5rem;
+      }
+    }
+
+    .p-paginator-first,
+    .p-paginator-prev,
+    .p-paginator-next,
+    .p-paginator-last {
+      min-width: 2.5rem;
+      height: 2.5rem;
+    }
+
+    .p-dropdown {
+      height: 2.5rem;
+    }
+  }
+
+  .p-dropdown.page-size-dropdown {
+    min-width: 5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .service-list {
     .header-section {

@@ -78,3 +78,90 @@
     color: #ffa000;
   }
 }
+
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+
+  .page-size-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+.custom-paginator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-top: 1px solid #e9ecef;
+
+  .paginator-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+
+  .paginator-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+
+    .page-numbers {
+      display: flex;
+      gap: 0.25rem;
+      margin: 0 0.5rem;
+
+      button {
+        min-width: 2.5rem;
+        height: 2.5rem;
+
+        &.active-page {
+          background-color: #2196f3;
+          border-color: #2196f3;
+        }
+      }
+    }
+
+    button {
+      min-width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+}
+
+// Style cho p-dropdown trong phân trang
+:host ::ng-deep {
+  .p-dropdown.page-size-dropdown {
+    min-width: 5rem;
+  }
+
+  .p-paginator {
+    .p-paginator-pages {
+      .p-paginator-page {
+        min-width: 2.5rem;
+        height: 2.5rem;
+
+        &.p-highlight {
+          background-color: #2196f3;
+          color: #ffffff;
+        }
+      }
+    }
+
+    .p-paginator-first,
+    .p-paginator-prev,
+    .p-paginator-next,
+    .p-paginator-last {
+      min-width: 2.5rem;
+      height: 2.5rem;
+
+      &:not(.p-disabled):hover {
+        background-color: #e9ecef;
+      }
+    }
+  }
+}

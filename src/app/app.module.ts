@@ -20,7 +20,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { TooltipModule } from 'primeng/tooltip';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
-
+import { PaginatorModule } from 'primeng/paginator';
 
 import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
@@ -94,6 +94,7 @@ import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi
     TooltipModule,
     DropdownModule,
     CalendarModule,
+    PaginatorModule,
     ChartModule,
     ProgressSpinnerModule,
     ChipModule,

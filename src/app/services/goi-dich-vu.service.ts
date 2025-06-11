@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
-import { BaseResponse } from '../models/base-response';
+import { BaseResponse, ApiResponse } from '../models/base-response';
 import { GoiDichVuRequest, GoiDichVuResponse, GoiDichVuUpdateRequest, GoiDichVuDichVuRequest, GoiDichVuDichVuResponse, ServiceItem } from '../models/goi-dich-vu';
 import { ServiceResponse } from '../models/service';
 
@@ -18,8 +18,22 @@ export class GoiDichVuService {
   constructor(private http: HttpClient) {}
 
   // Lấy tất cả gói dịch vụ
-  getAllGoiDichVu(): Observable<BaseResponse<GoiDichVuResponse[]>> {
-    return this.http.get<BaseResponse<GoiDichVuResponse[]>>(this.apiUrl);
+  // getAllGoiDichVu(): Observable<BaseResponse<GoiDichVuResponse[]>> {
+  //   return this.http.get<BaseResponse<GoiDichVuResponse[]>>(this.apiUrl);
+  // }
+  getAllGoiDichVu(keyword?: string, pageNumber: number = 1, pageSize: number = 10): Observable<ApiResponse<GoiDichVuResponse[]>> {
+    // Xây dựng tham số truy vấn
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
+    
+    if (keyword && keyword.trim() !== '') {
+      params = params.set('keyword', keyword.trim());
+    }
+    
+    console.log('Đang lấy gói dịch vụ với tham số:', { keyword, pageNumber, pageSize });
+    
+      return this.http.get<ApiResponse<GoiDichVuResponse[]>>(this.apiUrl, { params });
   }
 
   // Lấy chi tiết gói dịch vụ theo ID

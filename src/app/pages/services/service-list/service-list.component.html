@@ -4,7 +4,7 @@
     <div class="header-actions">
       <span class="p-input-icon-left search-box">
         <i class="pi pi-search"></i>
-        <input type="text" pInputText placeholder="Tìm kiếm theo tên dịch vụ..." 
+        <input type="text" pInputText placeholder="Tìm kiếm..." 
                [(ngModel)]="searchValue" 
                (keyup.enter)="onSearch()"
                class="search-input">
@@ -32,14 +32,24 @@
   </div>
 
   <p-card>
-    <p-table [value]="filteredServices" 
-             [loading]="loading" 
-             [paginator]="true" 
-             [rows]="rows"
-             [totalRecords]="totalRecords"
-             [showCurrentPageReport]="true"
-             currentPageReportTemplate="Hiển thị {first} - {last} trong tổng số {totalRecords} dịch vụ">
+    <div class="table-header">
+      <div class="page-size-selector">
+        <span>Hiển thị</span>
+        <p-dropdown [options]="pageSizeOptions" [(ngModel)]="rows"
+                   (onChange)="onPageSizeChange($event)" 
+                   styleClass="page-size-dropdown">
+        </p-dropdown>
+        <span>dịch vụ mỗi trang</span>
+      </div>
+    </div>
+
+    <!-- Bảng không sử dụng paginator mặc định -->
+    <p-table [value]="services" 
+             [loading]="loading"
+             [first]="first"
+             [rows]="rows">
       
+      <!-- Nội dung bảng giữ nguyên -->
       <ng-template pTemplate="header">
         <tr>
           <th>STT</th>
@@ -94,5 +104,105 @@
         </tr>
       </ng-template>
     </p-table>
+
+    <!-- Paginator tùy chỉnh -->
+    <div class="custom-paginator">
+      <!-- Thông tin trang -->
+      <div class="paginator-info">
+        Hiển thị {{ first + 1 }} - {{ Math.min(first + rows, totalRecords) }} trong tổng số {{ totalRecords }} dịch vụ
+      </div>
+      
+      <!-- Điều khiển phân trang -->
+      <div class="paginator-controls">
+        <!-- Nút về đầu trang -->
+        <button pButton type="button" 
+                icon="pi pi-angle-double-left" 
+                [disabled]="currentPage === 1"
+                (click)="goToPage(1)"></button>
+        
+        <!-- Nút về trang trước -->
+        <button pButton type="button" 
+                icon="pi pi-angle-left" 
+                [disabled]="currentPage === 1"
+                (click)="goToPage(currentPage - 1)"></button>
+        
+        <!-- Các số trang -->
+        <div class="page-numbers">
+          <ng-container *ngFor="let pageNum of getPageNumbers()">
+            <button pButton type="button" 
+                    [label]="pageNum.toString()"
+                    [class.active-page]="pageNum === currentPage"
+                    (click)="goToPage(pageNum)"></button>
+          </ng-container>
+        </div>
+        
+        <!-- Nút đến trang sau -->
+        <button pButton type="button" 
+                icon="pi pi-angle-right" 
+                [disabled]="currentPage === getTotalPages()"
+                (click)="goToPage(currentPage + 1)"></button>
+        
+        <!-- Nút đến trang cuối -->
+        <button pButton type="button" 
+                icon="pi pi-angle-double-right" 
+                [disabled]="currentPage === getTotalPages()"
+                (click)="goToPage(getTotalPages())"></button>
+      </div>
+    </div>
+
+    <!-- Vùng hiển thị debug -->
+    <div class="debug-info">
+      Trang hiện tại: {{ currentPage }}/{{ getTotalPages() }} | Số bản ghi/trang: {{ rows }} | Tổng: {{ totalRecords }}
+    </div>
   </p-card>
 </div>
+
+<style>
+.custom-paginator {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-top: 1px solid #e9ecef;
+  
+  .paginator-info {
+    font-size: 0.9rem;
+    color: #6c757d;
+  }
+  
+  .paginator-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    
+    .page-numbers {
+      display: flex;
+      gap: 0.25rem;
+      margin: 0 0.5rem;
+      
+      button {
+        min-width: 2.5rem;
+        height: 2.5rem;
+        
+        &.active-page {
+          background-color: #2196F3;
+          border-color: #2196F3;
+        }
+      }
+    }
+    
+    button {
+      min-width: 2.5rem;
+      height: 2.5rem;
+    }
+  }
+}
+
+.debug-info {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+  text-align: right;
+}
+</style>

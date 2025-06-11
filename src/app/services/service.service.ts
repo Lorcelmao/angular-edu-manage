@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 import { BaseResponse, ApiResponse } from '../models/base-response';
 import { ServiceRequest, ServiceUpdateRequest, ServiceResponse } from '../models/service';
-import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -14,14 +14,18 @@ export class ServiceService {
   constructor(private http: HttpClient) { }
 
   getAllServices(keyword?: string, pageNumber: number = 1, pageSize: number = 10): Observable<ApiResponse<ServiceResponse[]>> {
-    let params = new HttpParams();
-    if (keyword) {
-      params = params.set('keyword', keyword);
-    }
-    params = params.set('pageNumber', pageNumber.toString());
-    params = params.set('pageSize', pageSize.toString());
+    // Make sure we're sending the correct parameters
+    let params = new HttpParams()
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString());
     
-    return this.http.get<ApiResponse<ServiceResponse[]>>(`${this.apiUrl}`, { params });
+    if (keyword && keyword.trim() !== '') {
+      params = params.set('keyword', keyword.trim());
+    }
+    
+    console.log('Getting services with params:', { keyword, pageNumber, pageSize });
+    
+    return this.http.get<ApiResponse<ServiceResponse[]>>(this.apiUrl, { params });
   }
 
   getServiceById(id: string): Observable<BaseResponse<ServiceResponse>> {

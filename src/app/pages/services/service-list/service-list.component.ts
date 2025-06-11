@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ConfirmationService, MessageService } from 'primeng/api';
+import { ConfirmationService } from 'primeng/api';
 import { ServiceService } from '../../../services/service.service';
 import { ServiceResponse } from '../../../models/service';
 import { ApiResponse } from '../../../models/base-response';
@@ -13,20 +13,23 @@ import { ErrorHandlerService } from '../../../services/error-handler.service';
 })
 export class ServiceListComponent implements OnInit {
   services: ServiceResponse[] = [];
-  filteredServices: ServiceResponse[] = [];
   loading: boolean = false;
   searchValue: string = '';
+  
+  // Pagination properties
   totalRecords: number = 0;
   first: number = 0;
   rows: number = 10;
-
+  pageSizeOptions: number[] = [5, 10, 20, 50];
+  currentPage: number = 1;
+  Math = Math; // Để sử dụng Math trong template
+  
   constructor(
     private serviceService: ServiceService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private messageService: MessageService,
     private errorHandler: ErrorHandlerService
-  ) {}
+  ) { }
 
   ngOnInit() {
     this.loadServices();
@@ -34,12 +37,17 @@ export class ServiceListComponent implements OnInit {
 
   loadServices() {
     this.loading = true;
-    this.serviceService.getAllServices().subscribe({
+    
+    console.log('Đang tải dữ liệu trang:', this.currentPage, 'với', this.rows, 'dịch vụ/trang');
+    
+    this.serviceService.getAllServices(this.searchValue, this.currentPage, this.rows).subscribe({
       next: (response: ApiResponse<ServiceResponse[]>) => {
         this.services = response.data;
-        this.filteredServices = [...this.services];
-        this.totalRecords = this.services.length;
+        this.totalRecords = response.countItems || 0;
         this.loading = false;
+        
+        console.log('Đã tải trang', this.currentPage, 'với', this.services.length, 
+                   'dịch vụ. Tổng số:', this.totalRecords);
       },
       error: (error: any) => {
         this.errorHandler.handleError(error, 'tải danh sách dịch vụ');
@@ -48,42 +56,53 @@ export class ServiceListComponent implements OnInit {
     });
   }
 
-  onSearch() {
-    if (!this.searchValue.trim()) {
-      this.filteredServices = [...this.services];
-      this.totalRecords = this.services.length;
-      return;
-    }
+  // IMPORTANT: This is the key method that needs fixing
+  onPageChange(event: any) {
+    console.log('Page changed:', event);
+    
+    // Update first and rows from the event
+    this.first = event.first;
+    this.rows = event.rows;
+    
+    // Calculate the current page from first and rows
+    this.currentPage = Math.floor(this.first / this.rows) + 1;
+    
+    console.log('Current page calculated:', this.currentPage);
+    
+    // Load the data with the updated page number
+    this.loadServices();
+  }
 
-    this.loading = true;
-    this.serviceService.searchServicesByName(this.searchValue, 0, 100).subscribe({
-      next: (response) => {
-        this.filteredServices = response.data;
-        this.totalRecords = response.countItems;
-        this.loading = false;
-      },
-      error: (error: any) => {
-        this.errorHandler.handleError(error, 'tìm kiếm dịch vụ');
-        this.loading = false;
-      }
-    });
+  onSearch() {
+    this.first = 0;
+    this.currentPage = 1;
+    this.loadServices();
   }
 
   clearSearch() {
     this.searchValue = '';
-    this.onSearch();
+    this.first = 0;
+    this.currentPage = 1;
+    this.loadServices();
   }
 
+  onPageSizeChange(event: any) {
+    this.rows = event.value;
+    this.first = 0;
+    this.currentPage = 1;
+    this.loadServices();
+  }
+  
   createService() {
     this.router.navigate(['/services/create']);
   }
 
   viewService(service: ServiceResponse) {
-    this.router.navigate(['/services', service.id, 'view']);
+    this.router.navigate([`/services/view/${service.id}`]);
   }
 
   editService(service: ServiceResponse) {
-    this.router.navigate(['/services', service.id, 'edit']);
+    this.router.navigate([`/services/edit/${service.id}`]);
   }
 
   deleteService(service: ServiceResponse) {
@@ -106,20 +125,11 @@ export class ServiceListComponent implements OnInit {
   }
 
   formatCurrency(value: number): string {
-    return new Intl.NumberFormat('vi-VN', {
-      style: 'currency',
-      currency: 'VND'
-    }).format(value);
+    return value.toLocaleString('vi-VN') + ' VNĐ';
   }
 
   formatDuration(days: number): string {
-    if (!days && days !== 0) return '';
-    
-    if (days === 1) {
-      return '1 ngày';
-    }
-    
-    return `${days} ngày`;
+    return days + ' ngày';
   }
 
   getStatusSeverity(isActive: boolean): string {
@@ -128,5 +138,41 @@ export class ServiceListComponent implements OnInit {
 
   getStatusLabel(isActive: boolean): string {
     return isActive ? 'Hoạt động' : 'Ngưng hoạt động';
+  }
+
+  // Các phương thức phụ trợ cho phân trang tùy chỉnh
+  goToPage(page: number): void {
+    if (page < 1 || page > this.getTotalPages()) return;
+    
+    console.log('Chuyển đến trang:', page);
+    this.currentPage = page;
+    this.first = (page - 1) * this.rows;
+    this.loadServices();
+  }
+  
+  getTotalPages(): number {
+    return Math.ceil(this.totalRecords / this.rows) || 1;
+  }
+  
+  getPageNumbers(): number[] {
+    const totalPages = this.getTotalPages();
+    const currentPage = this.currentPage;
+    const maxPagesToShow = 5;
+    
+    if (totalPages <= maxPagesToShow) {
+      // Nếu tổng số trang ít hơn số trang tối đa hiển thị, hiện tất cả
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
+    }
+    
+    // Tính toán khoảng trang cần hiển thị
+    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+    let endPage = startPage + maxPagesToShow - 1;
+    
+    if (endPage > totalPages) {
+      endPage = totalPages;
+      startPage = Math.max(1, endPage - maxPagesToShow + 1);
+    }
+    
+    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
   }
 }
