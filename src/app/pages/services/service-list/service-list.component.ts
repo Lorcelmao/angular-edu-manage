@@ -16,13 +16,13 @@ export class ServiceListComponent implements OnInit {
   loading: boolean = false;
   searchValue: string = '';
   
-  // Pagination properties
+  
   totalRecords: number = 0;
   first: number = 0;
   rows: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 50];
   currentPage: number = 1;
-  Math = Math; // Để sử dụng Math trong template
+  Math = Math; 
   
   constructor(
     private serviceService: ServiceService,
@@ -56,20 +56,20 @@ export class ServiceListComponent implements OnInit {
     });
   }
 
-  // IMPORTANT: This is the key method that needs fixing
+  
   onPageChange(event: any) {
     console.log('Page changed:', event);
     
-    // Update first and rows from the event
+    
     this.first = event.first;
     this.rows = event.rows;
     
-    // Calculate the current page from first and rows
+    
     this.currentPage = Math.floor(this.first / this.rows) + 1;
     
     console.log('Current page calculated:', this.currentPage);
     
-    // Load the data with the updated page number
+    
     this.loadServices();
   }
 
@@ -140,7 +140,21 @@ export class ServiceListComponent implements OnInit {
     return isActive ? 'Hoạt động' : 'Ngưng hoạt động';
   }
 
-  // Các phương thức phụ trợ cho phân trang tùy chỉnh
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return 'N/A';
+    
+    const date = new Date(dateString);
+    const utcDate = new Date(date.getTime() + 7 * 60 * 60 * 1000); 
+    
+    return `${utcDate.getUTCDate().toString().padStart(2, '0')}/${
+      (utcDate.getUTCMonth() + 1).toString().padStart(2, '0')}/${
+      utcDate.getUTCFullYear()} ${
+      utcDate.getUTCHours().toString().padStart(2, '0')}:${
+      utcDate.getUTCMinutes().toString().padStart(2, '0')}:${
+      utcDate.getUTCSeconds().toString().padStart(2, '0')}`;
+  }
+
+  
   goToPage(page: number): void {
     if (page < 1 || page > this.getTotalPages()) return;
     
@@ -160,11 +174,11 @@ export class ServiceListComponent implements OnInit {
     const maxPagesToShow = 5;
     
     if (totalPages <= maxPagesToShow) {
-      // Nếu tổng số trang ít hơn số trang tối đa hiển thị, hiện tất cả
+      
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
     
-    // Tính toán khoảng trang cần hiển thị
+    
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = startPage + maxPagesToShow - 1;
     

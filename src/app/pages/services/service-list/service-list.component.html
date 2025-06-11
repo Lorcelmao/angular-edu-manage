@@ -43,20 +43,22 @@
       </div>
     </div>
 
-    <!-- Bảng không sử dụng paginator mặc định -->
+    
     <p-table [value]="services" 
              [loading]="loading"
              [first]="first"
              [rows]="rows">
       
-      <!-- Nội dung bảng giữ nguyên -->
+      
       <ng-template pTemplate="header">
         <tr>
           <th>STT</th>
           <th>Tên dịch vụ</th>
           <th>Mô tả</th>
           <th>Giá</th>
-          <th>Thời gian giao hàng</th>
+          <th>Thời gian thực hiện</th>
+          <th>Ngày tạo</th>
+          <th>Cập nhật</th>
           <th>Thao tác</th>
         </tr>
       </ng-template>
@@ -66,13 +68,15 @@
           <td>{{ rowIndex + 1 }}</td>
           <td>{{ service.tenDichVu }}</td>
           <td>
-            <!-- <div class="service-description" [pTooltip]="service.moTa" tooltipPosition="top"> -->
+            
                         <div class="service-description">
               <pre class="description-content">{{ service.moTa }}</pre>
             </div>
           </td>
           <td>{{ formatCurrency(service.giaTien) }}</td>
           <td>{{ formatDuration(service.deliveryTime) }}</td>
+          <td>{{ formatDate(service.createdAt) }}</td>
+          <td>{{ formatDate(service.updatedAt) }}</td>
           <td>
             <div class="action-buttons">
               <p-button icon="pi pi-eye" 
@@ -100,33 +104,33 @@
 
       <ng-template pTemplate="emptymessage">
         <tr>
-          <td colspan="6" class="text-center">Không có dữ liệu</td>
+          <td colspan="8" class="text-center">Không có dữ liệu</td>
         </tr>
       </ng-template>
     </p-table>
 
-    <!-- Paginator tùy chỉnh -->
+    
     <div class="custom-paginator">
-      <!-- Thông tin trang -->
+      
       <div class="paginator-info">
         Hiển thị {{ first + 1 }} - {{ Math.min(first + rows, totalRecords) }} trong tổng số {{ totalRecords }} dịch vụ
       </div>
       
-      <!-- Điều khiển phân trang -->
+      
       <div class="paginator-controls">
-        <!-- Nút về đầu trang -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-double-left" 
                 [disabled]="currentPage === 1"
                 (click)="goToPage(1)"></button>
         
-        <!-- Nút về trang trước -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-left" 
                 [disabled]="currentPage === 1"
                 (click)="goToPage(currentPage - 1)"></button>
         
-        <!-- Các số trang -->
+        
         <div class="page-numbers">
           <ng-container *ngFor="let pageNum of getPageNumbers()">
             <button pButton type="button" 
@@ -136,13 +140,13 @@
           </ng-container>
         </div>
         
-        <!-- Nút đến trang sau -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-right" 
                 [disabled]="currentPage === getTotalPages()"
                 (click)="goToPage(currentPage + 1)"></button>
         
-        <!-- Nút đến trang cuối -->
+        
         <button pButton type="button" 
                 icon="pi pi-angle-double-right" 
                 [disabled]="currentPage === getTotalPages()"
@@ -150,7 +154,7 @@
       </div>
     </div>
 
-    <!-- Vùng hiển thị debug -->
+    
     <div class="debug-info">
       Trang hiện tại: {{ currentPage }}/{{ getTotalPages() }} | Số bản ghi/trang: {{ rows }} | Tổng: {{ totalRecords }}
     </div>

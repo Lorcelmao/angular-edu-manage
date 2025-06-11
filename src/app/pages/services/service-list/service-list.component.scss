@@ -41,20 +41,22 @@
   }
 }
 
+.date-time {
+  font-family: 'Courier New', monospace;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
 .service-description {
   max-height: 80px;
   overflow-y: auto;
+}
 
-  .description-content {
-    font-family: inherit;
-    margin: 0;
-    white-space: pre-wrap;
-    word-break: break-word;
-    font-size: inherit;
-    background: transparent;
-    border: none;
-    padding: 0;
-  }
+.description-content {
+  margin: 0;
+  white-space: pre-wrap;
+  font-family: inherit;
+  font-size: 0.9rem;
 }
 
 .table-header {
