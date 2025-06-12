@@ -8,7 +8,7 @@ import { ServiceRequest, ServiceResponse } from '../models/service';
 @Injectable({
   providedIn: 'root'
 })
-export class DichVuService { // Thay đổi từ ServiceService sang DichVuService
+export class DichVuService { 
   private apiUrl = `${environment.api}/api/dich-vu`;
 
   constructor(private http: HttpClient) { }

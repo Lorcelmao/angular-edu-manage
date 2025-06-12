@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
-import { DichVuService } from '../../../services/dich-vu.service'; // Đã thay đổi tên import
-import { ServiceResponse } from '../../../models/service';
+import { DichVuService } from '../../../services/dich-vu.service';
+import { ServiceRequest, ServiceResponse, ServiceUpdateRequest } from '../../../models/service';
 import { ApiResponse } from '../../../models/base-response';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-dich-vu-list',
@@ -12,6 +13,7 @@ import { ErrorHandlerService } from '../../../services/error-handler.service';
   styleUrls: ['./dich-vu-list.component.scss']
 })
 export class DichVuListComponent implements OnInit {
+  
   services: ServiceResponse[] = [];
   loading: boolean = false;
   searchValue: string = '';
@@ -23,17 +25,37 @@ export class DichVuListComponent implements OnInit {
   currentPage: number = 1;
   Math = Math;
   
+  
+  viewDialog: boolean = false;
+  editDialog: boolean = false;
+  selectedService: ServiceResponse | null = null;
+  serviceForm: FormGroup;
+  isSubmitting: boolean = false;
+  
+  
+  private scrollPosition = 0;
+  
   constructor(
-    private dichVuService: DichVuService, // Thay đổi serviceService sang dichVuService
+    private dichVuService: DichVuService,
     private router: Router,
     private confirmationService: ConfirmationService,
-    private errorHandler: ErrorHandlerService
-  ) { }
+    private errorHandler: ErrorHandlerService,
+    private fb: FormBuilder
+  ) {
+    this.serviceForm = this.fb.group({
+      tenDichVu: ['', [Validators.required, Validators.minLength(2)]],
+      moTa: ['', [Validators.required, Validators.minLength(10)]],
+      giaTien: [null, [Validators.required, Validators.min(0)]],
+      deliveryTime: [null, [Validators.required, Validators.min(1)]]
+    });
+  }
 
   ngOnInit() {
     this.loadServices();
+    this.calculateScrollbarWidth();
   }
 
+  
   loadServices() {
     this.loading = true;
     
@@ -55,7 +77,19 @@ export class DichVuListComponent implements OnInit {
     });
   }
 
-  
+  onSearch() {
+    this.first = 0;
+    this.currentPage = 1;
+    this.loadServices();
+  }
+
+  clearSearch() {
+    this.searchValue = '';
+    this.first = 0;
+    this.currentPage = 1;
+    this.loadServices();
+  }
+
   onPageChange(event: any) {
     console.log('Page changed:', event);
     
@@ -72,19 +106,6 @@ export class DichVuListComponent implements OnInit {
     this.loadServices();
   }
 
-  onSearch() {
-    this.first = 0;
-    this.currentPage = 1;
-    this.loadServices();
-  }
-
-  clearSearch() {
-    this.searchValue = '';
-    this.first = 0;
-    this.currentPage = 1;
-    this.loadServices();
-  }
-
   onPageSizeChange(event: any) {
     this.rows = event.value;
     this.first = 0;
@@ -92,16 +113,63 @@ export class DichVuListComponent implements OnInit {
     this.loadServices();
   }
   
-  createService() {
-    this.router.navigate(['/services/create']);
-  }
-
+  
   viewService(service: ServiceResponse) {
-    this.router.navigate([`/services/view/${service.id}`]);
+    this.scrollPosition = window.pageYOffset;
+    this.selectedService = service;
+    
+    
+    
+    setTimeout(() => {
+      this.viewDialog = true;
+      
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.scrollPosition,
+          behavior: 'auto'
+        });
+      }, 0);
+    }, 0);
   }
 
   editService(service: ServiceResponse) {
-    this.router.navigate([`/services/edit/${service.id}`]);
+    this.scrollPosition = window.pageYOffset;
+    this.selectedService = service;
+    this.serviceForm.patchValue({
+      tenDichVu: service.tenDichVu,
+      moTa: service.moTa,
+      giaTien: service.giaTien,
+      deliveryTime: service.deliveryTime
+    });
+    
+    setTimeout(() => {
+      this.editDialog = true;
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.scrollPosition,
+          behavior: 'auto'
+        });
+      }, 0);
+    }, 0);
+  }
+
+  createService() {
+    this.scrollPosition = window.pageYOffset;
+    this.selectedService = null;
+    this.serviceForm.reset();
+    
+    setTimeout(() => {
+      this.editDialog = true;
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.scrollPosition,
+          behavior: 'auto'
+        });
+      }, 0);
+    }, 0);
   }
 
   deleteService(service: ServiceResponse) {
@@ -123,34 +191,140 @@ export class DichVuListComponent implements OnInit {
     });
   }
 
+  
+  
+  onSubmit() {
+    if (this.serviceForm.invalid) {
+      this.markFormGroupTouched();
+      this.errorHandler.handleWarning('Cảnh báo', 'Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    this.isSubmitting = true;
+    const formValue = this.serviceForm.value;
+
+    if (this.selectedService) {
+      
+      const updateRequest: ServiceUpdateRequest = {
+        tenDichVu: formValue.tenDichVu,
+        moTa: formValue.moTa,
+        giaTien: Number(formValue.giaTien),
+        deliveryTime: Number(formValue.deliveryTime)
+      };
+      
+      this.dichVuService.updateService(this.selectedService.id, updateRequest).subscribe({
+        next: (response) => {
+          this.errorHandler.handleSuccess('Thành công', 'Cập nhật dịch vụ thành công');
+          this.closeEditDialog();
+          this.loadServices();
+          this.isSubmitting = false;
+        },
+        error: (error) => {
+          this.errorHandler.handleError(error, 'cập nhật dịch vụ');
+          this.isSubmitting = false;
+        }
+      });
+    } else {
+      
+      const createRequest: ServiceRequest = {
+        tenDichVu: formValue.tenDichVu,
+        moTa: formValue.moTa,
+        giaTien: Number(formValue.giaTien),
+        deliveryTime: Number(formValue.deliveryTime)
+      };
+      
+      this.dichVuService.createService(createRequest).subscribe({
+        next: (response) => {
+          this.errorHandler.handleSuccess('Thành công', 'Thêm dịch vụ thành công');
+          this.closeEditDialog();
+          this.loadServices();
+          this.isSubmitting = false;
+        },
+        error: (error) => {
+          this.errorHandler.handleError(error, 'thêm dịch vụ');
+          this.isSubmitting = false;
+        }
+      });
+    }
+  }
+
+  
+  
+  closeViewDialog() {
+    this.viewDialog = false;
+    this.selectedService = null;
+    
+    
+    setTimeout(() => {
+      window.scrollTo(0, this.scrollPosition);
+    }, 0);
+  }
+  
+  closeEditDialog() {
+    this.editDialog = false;
+    this.selectedService = null;
+    this.serviceForm.reset();
+    
+    
+    setTimeout(() => {
+      window.scrollTo(0, this.scrollPosition);
+    }, 0);
+  }
+  
+  markFormGroupTouched() {
+    Object.keys(this.serviceForm.controls).forEach(key => {
+      this.serviceForm.get(key)?.markAsTouched();
+    });
+  }
+  
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.serviceForm.get(fieldName);
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+  
+  getFieldError(fieldName: string): string {
+    const field = this.serviceForm.get(fieldName);
+    
+    if (field?.hasError('required')) {
+      return 'Trường này là bắt buộc';
+    }
+    
+    if (field?.hasError('minlength')) {
+      const minLength = field.getError('minlength').requiredLength;
+      return `Độ dài tối thiểu là ${minLength} ký tự`;
+    }
+    
+    if (field?.hasError('min')) {
+      return 'Giá trị phải lớn hơn 0';
+    }
+    
+    return 'Trường không hợp lệ';
+  }
+
+  
   formatCurrency(value: number): string {
-    return value.toLocaleString('vi-VN') + ' VNĐ';
+    if (value === null || value === undefined) {
+      return '0 VNĐ';
+    }
+    return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' VNĐ';
   }
-
+  
   formatDuration(days: number): string {
-    return days + ' ngày';
+    return days ? `${days} ngày` : '';
   }
-
-  getStatusSeverity(isActive: boolean): string {
-    return isActive ? 'success' : 'danger';
-  }
-
-  getStatusLabel(isActive: boolean): string {
-    return isActive ? 'Hoạt động' : 'Ngưng hoạt động';
-  }
-
-  formatDate(dateString: string | undefined): string {
-    if (!dateString) return 'N/A';
+  
+  formatDate(dateString: string): string {
+    if (!dateString) return '';
     
     const date = new Date(dateString);
-    const utcDate = new Date(date.getTime() + 7 * 60 * 60 * 1000); 
-    
-    return `${utcDate.getUTCDate().toString().padStart(2, '0')}/${
-      (utcDate.getUTCMonth() + 1).toString().padStart(2, '0')}/${
-      utcDate.getUTCFullYear()} ${
-      utcDate.getUTCHours().toString().padStart(2, '0')}:${
-      utcDate.getUTCMinutes().toString().padStart(2, '0')}:${
-      utcDate.getUTCSeconds().toString().padStart(2, '0')}`;
+    return new Intl.DateTimeFormat('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }).format(date);
   }
 
   
@@ -162,21 +336,19 @@ export class DichVuListComponent implements OnInit {
     this.first = (page - 1) * this.rows;
     this.loadServices();
   }
-  
+
   getTotalPages(): number {
     return Math.ceil(this.totalRecords / this.rows) || 1;
   }
-  
+
   getPageNumbers(): number[] {
     const totalPages = this.getTotalPages();
     const currentPage = this.currentPage;
     const maxPagesToShow = 5;
     
     if (totalPages <= maxPagesToShow) {
-      
       return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
-    
     
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = startPage + maxPagesToShow - 1;
@@ -187,5 +359,27 @@ export class DichVuListComponent implements OnInit {
     }
     
     return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  }
+
+  
+  calculateScrollbarWidth() {
+    
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll';
+    document.body.appendChild(outer);
+
+    
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    
+    const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+    
+    
+    document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+    
+    
+    document.body.removeChild(outer);
   }
 }

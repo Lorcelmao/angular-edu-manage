@@ -1,4 +1,5 @@
 <div class="service-list">
+  
   <div class="header-section">
     <h2>Quản lý dịch vụ</h2>
     <div class="header-actions">
@@ -32,6 +33,7 @@
   </div>
 
   <p-card>
+    
     <div class="table-header">
       <div class="page-size-selector">
         <span>Hiển thị</span>
@@ -44,12 +46,7 @@
     </div>
 
     
-    <p-table [value]="services" 
-             [loading]="loading"
-             [first]="first"
-             [rows]="rows">
-      
-      
+    <p-table [value]="services" [loading]="loading" [first]="first" [rows]="rows">
       <ng-template pTemplate="header">
         <tr>
           <th>STT</th>
@@ -154,60 +151,175 @@
       </div>
     </div>
     
-    <!-- <div class="debug-info">
+    
+    <div class="debug-info">
       Trang hiện tại: {{ currentPage }}/{{ getTotalPages() }} | Số bản ghi/trang: {{ rows }} | Tổng: {{ totalRecords }}
-    </div> -->
+    </div>
   </p-card>
 
-</div>
-
-
-<style>
-.custom-paginator {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 1rem;
-  padding: 0.5rem;
-  border-top: 1px solid #e9ecef;
   
-  .paginator-info {
-    font-size: 0.9rem;
-    color: #6c757d;
-  }
-  
-  .paginator-controls {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
+  <p-dialog 
+    [(visible)]="viewDialog" 
+    [header]="'Chi tiết dịch vụ'" 
+    [modal]="true" 
+    [style]="{width: '650px'}" 
+    [draggable]="false" 
+    [resizable]="false"
+    [closeOnEscape]="true"
+    [blockScroll]="false"
+    (onHide)="closeViewDialog()">
     
-    .page-numbers {
-      display: flex;
-      gap: 0.25rem;
-      margin: 0 0.5rem;
-      
-      button {
-        min-width: 2.5rem;
-        height: 2.5rem;
+    <div class="service-details p-fluid" *ngIf="selectedService">
+      <div class="grid">
+        <div class="col-12">
+          <div class="detail-item">
+            <label>Tên dịch vụ:</label>
+            <span>{{ selectedService.tenDichVu }}</span>
+          </div>
+        </div>
         
-        &.active-page {
-          background-color: #2196F3;
-          border-color: #2196F3;
-        }
-      }
-    }
+        <div class="col-12">
+          <div class="detail-item">
+            <label>Mô tả:</label>
+            <p class="service-description">{{ selectedService.moTa }}</p>
+          </div>
+        </div>
+        
+        <div class="col-6">
+          <div class="detail-item">
+            <label>Giá dịch vụ:</label>
+            <span>{{ formatCurrency(selectedService.giaTien) }}</span>
+          </div>
+        </div>
+        
+        <div class="col-6">
+          <div class="detail-item">
+            <label>Thời gian thực hiện:</label>
+            <span>{{ formatDuration(selectedService.deliveryTime) }}</span>
+          </div>
+        </div>
+        
+        <div class="col-6">
+          <div class="detail-item">
+            <label>Ngày tạo:</label>
+            <span>{{ formatDate(selectedService.createdAt) }}</span>
+          </div>
+        </div>
+        
+        <div class="col-6">
+          <div class="detail-item">
+            <label>Cập nhật:</label>
+            <span>{{ formatDate(selectedService.updatedAt) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
     
-    button {
-      min-width: 2.5rem;
-      height: 2.5rem;
-    }
-  }
-}
+    <ng-template pTemplate="footer">
+      <button pButton pRipple label="Đóng" icon="pi pi-times" class="p-button-text" (click)="closeViewDialog()"></button>
+      <!-- <button pButton pRipple label="Chỉnh sửa" icon="pi pi-pencil" class="p-button-text p-button-warning" (click)="editService(selectedService!); closeViewDialog()"></button> -->
+    </ng-template>
+  </p-dialog>
+  
+  
+  <p-dialog 
+    [(visible)]="editDialog" 
+    [header]="selectedService ? 'Chỉnh sửa dịch vụ' : 'Thêm dịch vụ mới'" 
+    [modal]="true" 
+    [style]="{width: '700px'}" 
+    [draggable]="false" 
+    [resizable]="false"
+    [closeOnEscape]="true"
+    [blockScroll]="false"
+    (onHide)="closeEditDialog()">
+    
+    <div class="p-fluid">
+      <form [formGroup]="serviceForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="tenDichVu">Tên dịch vụ <span class="required">*</span></label>
+            <span class="p-input-icon-left w-full">
+              <i class="pi pi-tag"></i>
+              <input type="text" 
+                    id="tenDichVu"
+                    pInputText 
+                    formControlName="tenDichVu"
+                    placeholder="Nhập tên dịch vụ"
+                    class="w-full"
+                    [class.ng-invalid]="isFieldInvalid('tenDichVu')">
+            </span>
+            <small class="p-error" *ngIf="isFieldInvalid('tenDichVu')">
+              {{ getFieldError('tenDichVu') }}
+            </small>
+          </div>
 
-.debug-info {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: #6c757d;
-  text-align: right;
-}
-</style>
+          <div class="form-field">
+            <label for="moTa">Mô tả <span class="required">*</span></label>
+            <textarea id="moTa"
+                      pInputTextarea 
+                      formControlName="moTa"
+                      placeholder="Nhập mô tả chi tiết về dịch vụ"
+                      rows="4"
+                      class="w-full"
+                      [class.ng-invalid]="isFieldInvalid('moTa')">
+            </textarea>
+            <small class="p-error" *ngIf="isFieldInvalid('moTa')">
+              {{ getFieldError('moTa') }}
+            </small>
+          </div>
+
+          <div class="grid">
+            <div class="col-6">
+              <div class="form-field">
+                <label for="giaTien">Giá dịch vụ <span class="required">*</span></label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-wallet"></i>
+                  <input type="number" 
+                        id="giaTien"
+                        pInputText
+                        formControlName="giaTien"
+                        placeholder="Nhập giá dịch vụ"
+                        class="w-full"
+                        [class.ng-invalid]="isFieldInvalid('giaTien')">
+                </span>
+                <small class="field-help">Đơn vị: VNĐ</small>
+                <small class="p-error" *ngIf="isFieldInvalid('giaTien')">
+                  {{ getFieldError('giaTien') }}
+                </small>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-field">
+                <label for="deliveryTime">Thời gian thực hiện <span class="required">*</span></label>
+                <span class="p-input-icon-left w-full">
+                  <i class="pi pi-calendar-times"></i>
+                  <input type="number" 
+                        id="deliveryTime"
+                        pInputText
+                        formControlName="deliveryTime"
+                        placeholder="Nhập số ngày"
+                        class="w-full"
+                        min="1"
+                        [class.ng-invalid]="isFieldInvalid('deliveryTime')">
+                </span>
+                <small class="field-help">Đơn vị: ngày</small>
+                <small class="p-error" *ngIf="isFieldInvalid('deliveryTime')">
+                  {{ getFieldError('deliveryTime') }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+    
+    <ng-template pTemplate="footer">
+      <button pButton pRipple label="Hủy" icon="pi pi-times" class="p-button-text" (click)="closeEditDialog()"></button>
+      <button pButton pRipple [label]="selectedService ? 'Cập nhật' : 'Thêm mới'" 
+              icon="pi pi-check" class="p-button-success" 
+              [loading]="isSubmitting" 
+              (click)="onSubmit()"></button>
+    </ng-template>
+  </p-dialog>
+</div>

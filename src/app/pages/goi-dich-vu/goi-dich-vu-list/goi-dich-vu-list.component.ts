@@ -2,9 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { GoiDichVuService } from '../../../services/goi-dich-vu.service';
-import { GoiDichVuResponse, ServiceItem } from '../../../models/goi-dich-vu';
+import { GoiDichVuResponse, ServiceItem, GoiDichVuRequest, GoiDichVuUpdateRequest } from '../../../models/goi-dich-vu';
 import { ApiResponse, BaseResponse } from '../../../models/base-response';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ServiceResponse } from '../../../models/service';
+import { DichVuService } from '../../../services/dich-vu.service';
+import { convertMillisecondsToDays, formatDuration } from '../../../shared/utils/time-utils';
 
 @Component({
   selector: 'app-goi-dich-vu-list',
@@ -12,34 +16,390 @@ import { ErrorHandlerService } from '../../../services/error-handler.service';
   styleUrls: ['./goi-dich-vu-list.component.scss']
 })
 export class GoiDichVuListComponent implements OnInit {
+  
   goiDichVus: GoiDichVuResponse[] = [];
-  filteredGoiDichVus: GoiDichVuResponse[] = []; 
+  filteredGoiDichVus: GoiDichVuResponse[] = [];
   loading: boolean = false;
   searchValue: string = '';
-  
   
   totalRecords: number = 0;
   first: number = 0;
   rows: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 50];
   currentPage: number = 1;
-  Math = Math; 
-
+  Math = Math;
+  Number = Number; 
   
-  expandedServicePackages: Set<string> = new Set<string>();
-
+  expandedServicePackages: Set<string> = new Set();
+  
+  
+  viewDialog: boolean = false;
+  editDialog: boolean = false;
+  createDialog: boolean = false;
+  selectedGoiDichVu: GoiDichVuResponse | null = null;
+  goiDichVuForm: FormGroup;
+  isSubmitting: boolean = false;
+  
+  
+  availableServices: ServiceResponse[] = [];
+  selectedService: string = '';
+  serviceTypes = [
+    { label: 'Dịch vụ chính', value: 'dichvuchinh' },
+    { label: 'Dịch vụ thêm', value: 'dichvuthem' },
+    { label: 'Nội dung đặc điểm', value: 'noiDungDacDiem' }
+  ];
+  selectedServiceType: string = 'dichvuchinh';
+  private scrollPosition = 0;
+  
   constructor(
     private goiDichVuService: GoiDichVuService,
+    private dichVuService: DichVuService,
     private router: Router,
     private confirmationService: ConfirmationService,
     private messageService: MessageService,
-    private errorHandler: ErrorHandlerService
-  ) {}
+    private errorHandler: ErrorHandlerService,
+    private fb: FormBuilder
+  ) {
+    this.goiDichVuForm = this.fb.group({
+      tenGoi: ['', [Validators.required, Validators.minLength(2)]],
+      moTa: ['', [Validators.required, Validators.minLength(10)]],
+      giaGoi: [null, [Validators.required, Validators.min(0)]],
+      phuongThucThanhToan: [''],
+      chiPhiPhatSinh: [null]
+    });
+  }
 
   ngOnInit() {
     this.loadGoiDichVus();
+    this.calculateScrollbarWidth();
+  }
+  
+  calculateScrollbarWidth() {
+    const outer = document.createElement('div');
+    outer.style.visibility = 'hidden';
+    outer.style.overflow = 'scroll';
+    document.body.appendChild(outer);
+
+    const inner = document.createElement('div');
+    outer.appendChild(inner);
+
+    const scrollbarWidth = outer.offsetWidth - inner.offsetWidth;
+    document.documentElement.style.setProperty('--scrollbar-width', `${scrollbarWidth}px`);
+    
+    document.body.removeChild(outer);
   }
 
+  
+  createGoiDichVu() {
+    this.scrollPosition = window.pageYOffset;
+    this.selectedGoiDichVu = null;
+    this.goiDichVuForm.reset();
+    
+    setTimeout(() => {
+      this.createDialog = true;
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.scrollPosition,
+          behavior: 'auto'
+        });
+      }, 0);
+    }, 0);
+  }
+
+  viewGoiDichVu(goiDichVu: GoiDichVuResponse) {
+    this.scrollPosition = window.pageYOffset;
+    this.selectedGoiDichVu = goiDichVu;
+    this.loadAvailableServices(goiDichVu.id);
+    
+    setTimeout(() => {
+      this.viewDialog = true;
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.scrollPosition,
+          behavior: 'auto'
+        });
+      }, 0);
+    }, 0);
+  }
+
+  editGoiDichVu(goiDichVu: GoiDichVuResponse) {
+    this.scrollPosition = window.pageYOffset;
+    this.selectedGoiDichVu = goiDichVu;
+    this.goiDichVuForm.patchValue({
+      tenGoi: goiDichVu.tenGoi,
+      moTa: goiDichVu.moTa,
+      giaGoi: goiDichVu.giaGoi,
+      phuongThucThanhToan: goiDichVu.phuongThucThanhToan,
+      chiPhiPhatSinh: goiDichVu.chiPhiPhatSinh
+    });
+    this.loadAvailableServices(goiDichVu.id);
+    
+    setTimeout(() => {
+      this.editDialog = true;
+      
+      setTimeout(() => {
+        window.scrollTo({
+          top: this.scrollPosition,
+          behavior: 'auto'
+        });
+      }, 0);
+    }, 0);
+  }
+
+  
+  onSubmit() {
+    if (this.goiDichVuForm.invalid) {
+      this.markFormGroupTouched(this.goiDichVuForm);
+      this.errorHandler.handleWarning('Cảnh báo', 'Vui lòng điền đầy đủ thông tin bắt buộc');
+      return;
+    }
+
+    this.isSubmitting = true;
+    const formValue = this.goiDichVuForm.value;
+
+    if (this.selectedGoiDichVu) {
+      
+      const updateRequest: GoiDichVuUpdateRequest = {
+        tenGoi: formValue.tenGoi,
+        moTa: formValue.moTa,
+        giaGoi: Number(formValue.giaGoi),
+        phuongThucThanhToan: formValue.phuongThucThanhToan,
+        chiPhiPhatSinh: formValue.chiPhiPhatSinh ? formValue.chiPhiPhatSinh.toString() : undefined
+      };
+      
+      this.goiDichVuService.updateGoiDichVu(this.selectedGoiDichVu.id, updateRequest).subscribe({
+        next: (response) => {
+          this.errorHandler.handleSuccess('Thành công', 'Cập nhật gói dịch vụ thành công');
+          this.closeDialogs();
+          this.loadGoiDichVus();
+          this.isSubmitting = false;
+        },
+        error: (error) => {
+          this.errorHandler.handleError(error, 'cập nhật gói dịch vụ');
+          this.isSubmitting = false;
+        }
+      });
+    } else {
+      
+      const createRequest: GoiDichVuRequest = {
+        tenGoi: formValue.tenGoi,
+        moTa: formValue.moTa,
+        giaGoi: Number(formValue.giaGoi),
+        phuongThucThanhToan: formValue.phuongThucThanhToan,
+        chiPhiPhatSinh: formValue.chiPhiPhatSinh ? formValue.chiPhiPhatSinh.toString() : undefined
+      };
+      
+      this.goiDichVuService.createGoiDichVu(createRequest).subscribe({
+        next: (response) => {
+          this.errorHandler.handleSuccess('Thành công', 'Thêm gói dịch vụ thành công');
+          this.closeDialogs();
+          this.loadGoiDichVus();
+          this.isSubmitting = false;
+        },
+        error: (error) => {
+          this.errorHandler.handleError(error, 'thêm gói dịch vụ');
+          this.isSubmitting = false;
+        }
+      });
+    }
+  }
+
+  
+  loadAvailableServices(goiDichVuId: string) {
+    this.goiDichVuService.getServicesNotInPackage(goiDichVuId).subscribe({
+      next: (response: BaseResponse<ServiceResponse[]>) => {
+        this.availableServices = response.data;
+      },
+      error: (error) => {
+        this.errorHandler.handleError(error, 'tải danh sách dịch vụ có thể thêm');
+      }
+    });
+  }
+
+  
+  loadSelectedGoiDichVuDetails() {
+    if (!this.selectedGoiDichVu) return;
+    
+    this.goiDichVuService.getGoiDichVuById(this.selectedGoiDichVu.id).subscribe({
+      next: (response) => {
+        this.selectedGoiDichVu = response.data;
+      },
+      error: (error) => {
+        this.errorHandler.handleError(error, 'tải thông tin gói dịch vụ');
+      }
+    });
+  }
+
+  
+  addServiceToPackage() {
+    if (!this.selectedService || !this.selectedGoiDichVu) {
+      this.errorHandler.handleWarning('Cảnh báo', 'Vui lòng chọn dịch vụ để thêm vào gói');
+      return;
+    }
+
+    this.goiDichVuService.addServiceToPackage(
+      this.selectedGoiDichVu.id, 
+      this.selectedService
+    ).subscribe({
+      next: (response) => {
+        this.errorHandler.handleSuccess('Thành công', 'Thêm dịch vụ vào gói thành công');
+        this.selectedService = '';
+        
+        
+        this.loadSelectedGoiDichVuDetails();
+        
+        
+        this.loadAvailableServices(this.selectedGoiDichVu!.id);
+        
+        
+        this.loadGoiDichVus();
+      },
+      error: (error) => {
+        this.errorHandler.handleError(error, 'thêm dịch vụ vào gói');
+      }
+    });
+  }
+
+  
+  removeServiceFromPackage(service: ServiceItem, serviceType: string) {
+    if (!this.selectedGoiDichVu) return;
+
+    this.confirmationService.confirm({
+      message: `Bạn có chắc chắn muốn xóa dịch vụ "${service.tenDichVu}" khỏi gói?`,
+      header: 'Xác nhận xóa',
+      icon: 'pi pi-exclamation-triangle',
+      accept: () => {
+        this.goiDichVuService.removeServiceFromPackage(this.selectedGoiDichVu!.id, service.id, serviceType).subscribe({
+          next: (response) => {
+            this.errorHandler.handleSuccess('Thành công', 'Xóa dịch vụ khỏi gói thành công');
+            this.loadGoiDichVus(); 
+            this.loadAvailableServices(this.selectedGoiDichVu!.id);
+          },
+          error: (error) => {
+            this.errorHandler.handleError(error, 'xóa dịch vụ khỏi gói');
+          }
+        });
+      }
+    });
+  }
+
+  
+  calculateTotalServicesPrice(): number {
+    if (!this.selectedGoiDichVu) return 0;
+    
+    let total = 0;
+    
+    if (this.selectedGoiDichVu.dichvuchinh) {
+      total += this.selectedGoiDichVu.dichvuchinh.reduce((sum, service) => sum + service.giaTien, 0);
+    }
+    
+    if (this.selectedGoiDichVu.dichvuthem) {
+      total += this.selectedGoiDichVu.dichvuthem.reduce((sum, service) => sum + service.giaTien, 0);
+    }
+    
+    if (this.selectedGoiDichVu.noiDungDacDiem) {
+      total += this.selectedGoiDichVu.noiDungDacDiem.reduce((sum, service) => sum + service.giaTien, 0);
+    }
+    
+    return total;
+  }
+
+  formatDuration(days: number): string {
+    return formatDuration(days);
+  }
+  
+  
+  convertMillisToDay(millis: number): string {
+    return convertMillisecondsToDays(millis);
+  }
+
+  
+  calculateTotalDeliveryTime(goiDichVu?: GoiDichVuResponse): string {
+    
+    if (goiDichVu) {
+      const services = [
+        ...(goiDichVu.dichvuchinh || []),
+        ...(goiDichVu.dichvuthem || []),
+        ...(goiDichVu.noiDungDacDiem || [])
+      ];
+      
+      if (services.length === 0) return formatDuration(0);
+      
+      
+      const maxDeliveryTime = Math.max(...services.map(s => s.deliveryTime));
+      return formatDuration(maxDeliveryTime);
+    }
+    
+    
+    if (!this.selectedGoiDichVu) return formatDuration(0);
+    
+    const services = [
+      ...(this.selectedGoiDichVu.dichvuchinh || []),
+      ...(this.selectedGoiDichVu.dichvuthem || []),
+      ...(this.selectedGoiDichVu.noiDungDacDiem || [])
+    ];
+    
+    if (services.length === 0) return formatDuration(0);
+    
+    
+    const maxDeliveryTime = Math.max(...services.map(s => s.deliveryTime));
+    return formatDuration(maxDeliveryTime);
+  }
+
+  
+  closeDialogs() {
+    this.viewDialog = false;
+    this.editDialog = false;
+    this.createDialog = false;
+    this.selectedGoiDichVu = null;
+    this.selectedService = '';
+    this.availableServices = [];
+    this.goiDichVuForm.reset();
+    
+    setTimeout(() => {
+      window.scrollTo({
+        top: this.scrollPosition,
+        behavior: 'auto'
+      });
+    }, 0);
+  }
+  
+  markFormGroupTouched(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(key => {
+      const control = formGroup.get(key);
+      if (control) {
+        control.markAsTouched();
+      }
+    });
+  }
+  
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.goiDichVuForm.get(fieldName);
+    return field ? field.invalid && (field.dirty || field.touched) : false;
+  }
+  
+  getFieldError(fieldName: string): string {
+    const field = this.goiDichVuForm.get(fieldName);
+    
+    if (field?.hasError('required')) {
+      return 'Trường này là bắt buộc';
+    }
+    
+    if (field?.hasError('minlength')) {
+      const minLength = field.errors?.['minlength'].requiredLength;
+      return `Độ dài tối thiểu là ${minLength} ký tự`;
+    }
+    
+    if (field?.hasError('min')) {
+      return 'Giá trị phải lớn hơn 0';
+    }
+    
+    return 'Trường không hợp lệ';
+  }
+
+  
   loadGoiDichVus() {
     this.loading = true;
     
@@ -63,84 +423,6 @@ export class GoiDichVuListComponent implements OnInit {
       });
   }
 
-  onPageChange(event: any) {
-    console.log('Page changed:', event);
-    
-    this.first = event.first;
-    this.rows = event.rows;
-    this.currentPage = Math.floor(this.first / this.rows) + 1;
-    
-    console.log('Current page calculated:', this.currentPage);
-    this.loadGoiDichVus();
-  }
-
-  onSearch() {
-    this.first = 0;
-    this.currentPage = 1;
-    this.loadGoiDichVus();
-  }
-
-  clearSearch() {
-    this.searchValue = '';
-    this.first = 0;
-    this.currentPage = 1;
-    this.loadGoiDichVus();
-  }
-
-  onPageSizeChange(event: any) {
-    this.rows = event.value;
-    this.first = 0;
-    this.currentPage = 1;
-    this.loadGoiDichVus();
-  }
-
-  
-  goToPage(page: number): void {
-    if (page < 1 || page > this.getTotalPages()) return;
-    
-    console.log('Chuyển đến trang:', page);
-    this.currentPage = page;
-    this.first = (page - 1) * this.rows;
-    this.loadGoiDichVus();
-  }
-  
-  getTotalPages(): number {
-    return Math.ceil(this.totalRecords / this.rows) || 1;
-  }
-  
-  getPageNumbers(): number[] {
-    const totalPages = this.getTotalPages();
-    const currentPage = this.currentPage;
-    const maxPagesToShow = 5;
-    
-    if (totalPages <= maxPagesToShow) {
-      return Array.from({ length: totalPages }, (_, i) => i + 1);
-    }
-    
-    let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
-    let endPage = startPage + maxPagesToShow - 1;
-    
-    if (endPage > totalPages) {
-      endPage = totalPages;
-      startPage = Math.max(1, endPage - maxPagesToShow + 1);
-    }
-    
-    return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  }
-
-  
-  createGoiDichVu() {
-    this.router.navigate(['/goi-dich-vu/create']);
-  }
-
-  viewGoiDichVu(goiDichVu: GoiDichVuResponse) {
-    this.router.navigate([`/goi-dich-vu/view/${goiDichVu.id}`]);
-  }
-
-  editGoiDichVu(goiDichVu: GoiDichVuResponse) {
-    this.router.navigate([`/goi-dich-vu/edit/${goiDichVu.id}`]);
-  }
-
   deleteGoiDichVu(goiDichVu: GoiDichVuResponse) {
     this.confirmationService.confirm({
       message: `Bạn có chắc chắn muốn xóa gói dịch vụ "${goiDichVu.tenGoi}"?`,
@@ -160,122 +442,139 @@ export class GoiDichVuListComponent implements OnInit {
     });
   }
 
-  formatCurrency(value: number | null | undefined): string {
-    
+  
+  formatCurrency(value: number): string {
     if (value === null || value === undefined) {
       return '0 VNĐ';
     }
     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + ' VNĐ';
   }
-
   
-  convertMillisToDay(milliseconds: number | null | undefined): number {
-    if (milliseconds === null || milliseconds === undefined) {
-      return 0;
-    }
-    
-    return Math.round((milliseconds / 86400000) * 100) / 100; 
-  }
-
   
-  calculateTotalDeliveryTime(goiDichVu: GoiDichVuResponse): number {
-    let maxTimeMillis = 0;
-    
-    
-    if (goiDichVu.dichvuchinh?.length) {
-      goiDichVu.dichvuchinh.forEach(service => {
-        if (service.deliveryTime > maxTimeMillis) {
-          maxTimeMillis = service.deliveryTime;
-        }
-      });
-    }
-    
-    
-    if (goiDichVu.dichvuthem?.length) {
-      goiDichVu.dichvuthem.forEach(service => {
-        if (service.deliveryTime > maxTimeMillis) {
-          maxTimeMillis = service.deliveryTime;
-        }
-      });
-    }
-    
-    
-    if (goiDichVu.noiDungDacDiem?.length) {
-      goiDichVu.noiDungDacDiem.forEach(service => {
-        if (service.deliveryTime > maxTimeMillis) {
-          maxTimeMillis = service.deliveryTime;
-        }
-      });
-    }
-    
-    
-    return this.convertMillisToDay(maxTimeMillis);
-  }
-
-  getServiceTooltip(service: ServiceItem): string {
-    const deliveryTimeInDays = this.convertMillisToDay(service.deliveryTime);
-    return `${service.tenDichVu}\nGiá: ${this.formatCurrency(service.giaTien)}\nThời gian: ${deliveryTimeInDays}\n${service.moTa}`;
-  }
-
+  
+  
   
   formatDate(dateString: string | undefined): string {
-    if (!dateString) return 'N/A';
+    if (!dateString) return '';
     
     const date = new Date(dateString);
+    return new Intl.DateTimeFormat('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    }).format(date);
+  }
+
+  getServicesByType(type: string): ServiceItem[] {
+    if (!this.selectedGoiDichVu) return [];
     
-    
-    return `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}:${date.getSeconds().toString().padStart(2, '0')}`;
-  }
-
-  
-  getTotalServiceCount(goiDichVu: GoiDichVuResponse): number {
-    let count = 0;
-    count += goiDichVu.dichvuchinh?.length || 0;
-    count += goiDichVu.dichvuthem?.length || 0;
-    count += goiDichVu.noiDungDacDiem?.length || 0;
-    return count;
-  }
-
-  
-  isServiceExpanded(packageId: string): boolean {
-    return this.expandedServicePackages.has(packageId);
-  }
-
-  
-  toggleServiceExpand(packageId: string, expand: boolean): void {
-    if (expand) {
-      this.expandedServicePackages.add(packageId);
-    } else {
-      this.expandedServicePackages.delete(packageId);
+    switch(type) {
+      case 'dichvuchinh':
+        return this.selectedGoiDichVu.dichvuchinh || [];
+      case 'dichvuthem':
+        return this.selectedGoiDichVu.dichvuthem || [];
+      case 'noiDungDacDiem':
+        return this.selectedGoiDichVu.noiDungDacDiem || []; 
+      default:
+        return [];
     }
   }
 
-  
-  hasManyServices(goiDichVu: GoiDichVuResponse): boolean {
-    return this.getTotalServiceCount(goiDichVu) > 4;
+  getServiceCountByType(type: string): number {
+    return this.getServicesByType(type).length;
   }
 
   
-  getMainServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
-    if (!goiDichVu.dichvuchinh) return [];
-    return this.isServiceExpanded(goiDichVu.id) ? 
-      goiDichVu.dichvuchinh : 
-      goiDichVu.dichvuchinh.slice(0, 2);
-  }
+onSearch() {
+  this.first = 0;
+  this.currentPage = 1;
+  this.loadGoiDichVus();
+}
 
-  
-  getAdditionalServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
-    if (!goiDichVu.dichvuthem) return [];
-    return this.isServiceExpanded(goiDichVu.id) ? 
-      goiDichVu.dichvuthem : 
-      goiDichVu.dichvuthem.slice(0, 2);
-  }
+clearSearch() {
+  this.searchValue = '';
+  this.first = 0;
+  this.currentPage = 1;
+  this.loadGoiDichVus();
+}
 
+onPageSizeChange(event: any) {
+  this.rows = event.value;
+  this.first = 0;
+  this.currentPage = 1;
+  this.loadGoiDichVus();
+}
+
+
+goToPage(page: number): void {
+  if (page < 1 || page > this.getTotalPages()) return;
   
-  getFeatureServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
-    if (!goiDichVu.noiDungDacDiem) return [];
-    return this.isServiceExpanded(goiDichVu.id) ? 
-      goiDichVu.noiDungDacDiem : 
-      [];  
+  this.currentPage = page;
+  this.first = (page - 1) * this.rows;
+  this.loadGoiDichVus();
+}
+
+getTotalPages(): number {
+  return Math.ceil(this.totalRecords / this.rows) || 1;
+}
+
+getPageNumbers(): number[] {
+  const totalPages = this.getTotalPages();
+  const currentPage = this.currentPage;
+  const maxPagesToShow = 5;
+  
+  if (totalPages <= maxPagesToShow) {
+    return Array.from({ length: totalPages }, (_, i) => i + 1);
   }
+  
+  let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
+  let endPage = startPage + maxPagesToShow - 1;
+  
+  if (endPage > totalPages) {
+    endPage = totalPages;
+    startPage = Math.max(1, endPage - maxPagesToShow + 1);
+  }
+  
+  return Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+}
+
+
+getMainServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
+  return goiDichVu.dichvuchinh || [];
+}
+
+getAdditionalServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
+  return goiDichVu.dichvuthem || [];
+}
+
+getFeatureServices(goiDichVu: GoiDichVuResponse): ServiceItem[] {
+  return goiDichVu.noiDungDacDiem || [];
+}
+
+getServiceTooltip(service: ServiceItem): string {
+  return `${service.tenDichVu} - ${this.formatCurrency(service.giaTien)} - ${this.formatDuration(service.deliveryTime)}`;
+}
+
+
+isServiceExpanded(goiDichVuId: string): boolean {
+  return this.expandedServicePackages.has(goiDichVuId);
+}
+
+hasManyServices(goiDichVu: GoiDichVuResponse): boolean {
+  const totalServices = (goiDichVu.dichvuchinh?.length || 0) + 
+                        (goiDichVu.dichvuthem?.length || 0) + 
+                        (goiDichVu.noiDungDacDiem?.length || 0);
+  return totalServices > 3;
+}
+
+toggleServiceExpand(goiDichVuId: string, expand: boolean): void {
+  if (expand) {
+    this.expandedServicePackages.add(goiDichVuId);
+  } else {
+    this.expandedServicePackages.delete(goiDichVuId);
+  }
+}
 }

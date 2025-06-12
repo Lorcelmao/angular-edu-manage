@@ -18,6 +18,7 @@ import { PanelMenuModule } from 'primeng/panelmenu';
 import { AvatarModule } from 'primeng/avatar';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+
 import { TooltipModule } from 'primeng/tooltip';
 import { DropdownModule } from 'primeng/dropdown';
 import { CalendarModule } from 'primeng/calendar';
@@ -26,6 +27,7 @@ import { ChartModule } from 'primeng/chart';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { ChipModule } from 'primeng/chip';
 import { TabViewModule } from 'primeng/tabview';
+import { DialogModule } from 'primeng/dialog';
 
 import { MessageService } from 'primeng/api';
 import { ConfirmationService } from 'primeng/api';
@@ -52,7 +54,6 @@ import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi
     HeaderComponent,
     SidebarComponent,
     MainLayoutComponent,
-    // Thay thế các component cũ
     DichVuListComponent,
     DichVuFormComponent,
     GoiDichVuListComponent,
@@ -86,12 +87,12 @@ import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi
     ChartModule,
     ProgressSpinnerModule,
     ChipModule,
-    TabViewModule
+    TabViewModule,
+    DialogModule
   ],
   providers: [
     MessageService, 
     ConfirmationService,
-    // Nếu có ServiceService ở đây, thay đổi thành DichVuService
   ],
   bootstrap: [AppComponent]
 })

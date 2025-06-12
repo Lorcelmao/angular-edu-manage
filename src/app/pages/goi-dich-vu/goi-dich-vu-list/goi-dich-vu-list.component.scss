@@ -287,16 +287,16 @@
     }
   }
 
-  // Đảm bảo chip không bị tràn
+  
   .p-chip {
     max-width: 100%;
     overflow: hidden;
   }
 }
 
-// Chỉnh nút "xem thêm"
+
 .expand-button, .collapse-button {
-  grid-column: 1 / -1; // Chiếm toàn bộ chiều rộng
+  grid-column: 1 / -1; 
   justify-self: center;
   margin-top: 0.25rem;
   font-size: 0.85rem;
@@ -308,7 +308,7 @@
 }
 
 .expand-button {
-  color: #2196F3; // Màu xanh cho nút xem thêm
+  color: #2196F3; 
   
   &:hover {
     background-color: #e3f2fd;
@@ -316,14 +316,14 @@
 }
 
 .collapse-button {
-  color: #6c757d; // Màu xám cho nút thu gọn
+  color: #6c757d; 
   
   &:hover {
     background-color: #f8f9fa;
   }
 }
 
-// Điều chỉnh icon trong nút
+
 :host ::ng-deep {
   .expand-button, .collapse-button {
     .p-button-icon {
@@ -331,5 +331,150 @@
       margin-right: 0.3rem;
     }
   }
+}
+
+
+:host ::ng-deep {
+  
+  .p-button.p-button-text:not(.p-disabled):hover {
+    background: rgba(0, 0, 0, 0.04);
+  }
+  
+  
+  .p-dialog .p-dialog-header {
+    padding: 1rem 1.5rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .p-dialog .p-dialog-content {
+    padding: 1.5rem;
+  }
+  
+  .p-dialog .p-dialog-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e9ecef;
+    background-color: #f8f9fa;
+    text-align: right;
+  }
+}
+
+
+:host ::ng-deep {
+  body.p-overflow-hidden {
+    padding-right: var(--scrollbar-width, 17px);
+    
+    position: static !important;
+    width: auto !important;
+    overflow: auto !important; 
+    height: auto !important; 
+    top: auto !important;
+    left: auto !important;
+  }
+}
+
+
+.goi-dich-vu-details {
+  .detail-item {
+    margin-bottom: 1.25rem;
+    
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: #495057;
+    }
+    
+    span {
+      display: block;
+    }
+  }
+  
+  .service-description {
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    padding: 0.75rem;
+    white-space: pre-line;
+    margin: 0;
+  }
+}
+
+
+.add-service-form {
+  margin-top: 1.5rem;
+  
+  h4 {
+    margin-bottom: 1rem;
+    color: #495057;
+  }
+  
+  .add-service-inputs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    
+    .service-dropdown {
+      flex: 3;
+    }
+    
+    .service-type-dropdown {
+      flex: 1;
+    }
+    
+    .p-button {
+      align-self: flex-end;
+    }
+  }
+  
+  .service-option {
+    display: flex;
+    justify-content: space-between;
+    
+    .service-price {
+      font-weight: 600;
+      color: #2196F3;
+    }
+  }
+}
+
+
+.total-section {
+  margin-top: 1.5rem;
+  
+  .total-content {
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      
+      .total-label {
+        font-weight: 600;
+      }
+      
+      .total-value {
+        font-weight: 600;
+        color: #2196F3;
+      }
+    }
+  }
+}
+
+
+.form-field {
+  margin-bottom: 1.25rem;
+  
+  label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+  }
+  
+  .required {
+    color: #e74c3c;
+  }
+}
+
+.mt-4 {
+  margin-top: 1.5rem;
 }
 

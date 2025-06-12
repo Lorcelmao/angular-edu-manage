@@ -55,7 +55,7 @@ export class GoiDichVuFormComponent implements OnInit {
     this.goiDichVuForm = this.fb.group({
       tenGoi: ['', [Validators.required, Validators.minLength(2)]],
       moTa: ['', [Validators.required, Validators.minLength(10)]],
-      giaGoi: ['', [Validators.required, Validators.min(0)]],
+      giaGoi: [null, [Validators.required, Validators.min(0)]],
       phuongThucThanhToan: [''],
       chiPhiPhatSinh: ['']
     });

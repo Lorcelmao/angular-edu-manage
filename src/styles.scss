@@ -607,6 +607,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+/* Đảm bảo dialog không làm thay đổi bố cục của trang */
+body.p-overflow-hidden {
+  position: static !important;
+  width: auto !important;
+  overflow: auto !important;
+}
+
 .p-calendar .p-datepicker {
   z-index: 1100 !important;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15) !important;
@@ -702,4 +709,12 @@ h1, h2, h3, h4, h5, h6 {
 .small-chip .p-chip-text {
   font-family: 'Alexandria', sans-serif !important;
   font-size: 0.85rem !important;
+}
+
+.p-dialog-mask {
+  z-index: 1000 !important; 
+}
+
+.p-dialog {
+  z-index: 1001 !important;
 }
