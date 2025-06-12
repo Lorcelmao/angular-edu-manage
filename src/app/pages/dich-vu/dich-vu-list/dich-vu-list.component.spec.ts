@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ServiceFormComponent } from './service-form.component';
+import { DichVuListComponent } from './dich-vu-list.component';
 
-describe('ServiceFormComponent', () => {
-  let component: ServiceFormComponent;
-  let fixture: ComponentFixture<ServiceFormComponent>;
+describe('DichVuListComponent', () => {
+  let component: DichVuListComponent;
+  let fixture: ComponentFixture<DichVuListComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ServiceFormComponent ]
+      declarations: [ DichVuListComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ServiceFormComponent);
+    fixture = TestBed.createComponent(DichVuListComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
 import { GoiDichVuService } from '../../../services/goi-dich-vu.service';
-import { ServiceService } from '../../../services/service.service';
+import { DichVuService } from '../../../services/dich-vu.service'; // Đã thay đổi tên import
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { 
   GoiDichVuRequest, 
@@ -45,7 +45,7 @@ export class GoiDichVuFormComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private goiDichVuService: GoiDichVuService,
-    private serviceService: ServiceService,
+    private dichVuService: DichVuService, // Thay đổi serviceService sang dichVuService
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService,

@@ -39,8 +39,10 @@ import { SidebarComponent } from './layout/sidebar/sidebar.component';
 import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
 
 // Service Components
-import { ServiceListComponent } from './pages/services/service-list/service-list.component';
-import { ServiceFormComponent } from './pages/services/service-form/service-form.component';
+// import { ServiceListComponent } from './pages/services/service-list/service-list.component';
+// import { ServiceFormComponent } from './pages/services/service-form/service-form.component';
+import { DichVuListComponent } from './pages/dich-vu/dich-vu-list/dich-vu-list.component';
+import { DichVuFormComponent } from './pages/dich-vu/dich-vu-form/dich-vu-form.component';
 import { GoiDichVuListComponent } from './pages/goi-dich-vu/goi-dich-vu-list/goi-dich-vu-list.component';
 import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi-dich-vu-form.component';
 
@@ -50,9 +52,9 @@ import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi
     HeaderComponent,
     SidebarComponent,
     MainLayoutComponent,
-    // Chỉ giữ lại components liên quan đến dịch vụ và gói dịch vụ
-    ServiceListComponent,
-    ServiceFormComponent,
+    // Thay thế các component cũ
+    DichVuListComponent,
+    DichVuFormComponent,
     GoiDichVuListComponent,
     GoiDichVuFormComponent,
   ],
@@ -86,7 +88,11 @@ import { GoiDichVuFormComponent } from './pages/goi-dich-vu/goi-dich-vu-form/goi
     ChipModule,
     TabViewModule
   ],
-  providers: [MessageService, ConfirmationService],
+  providers: [
+    MessageService, 
+    ConfirmationService,
+    // Nếu có ServiceService ở đây, thay đổi thành DichVuService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

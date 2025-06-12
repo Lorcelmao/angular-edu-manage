@@ -3,12 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { BaseResponse, ApiResponse } from '../models/base-response';
-import { ServiceRequest, ServiceUpdateRequest, ServiceResponse } from '../models/service';
+import { ServiceRequest, ServiceResponse } from '../models/service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ServiceService {
+export class DichVuService { // Thay đổi từ ServiceService sang DichVuService
   private apiUrl = `${environment.api}/api/dich-vu`;
 
   constructor(private http: HttpClient) { }

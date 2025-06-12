@@ -1,31 +1,30 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
-import { ServiceService } from '../../../services/service.service';
+import { DichVuService } from '../../../services/dich-vu.service'; // Đã thay đổi tên import
 import { ServiceResponse } from '../../../models/service';
 import { ApiResponse } from '../../../models/base-response';
 import { ErrorHandlerService } from '../../../services/error-handler.service';
 
 @Component({
-  selector: 'app-service-list',
-  templateUrl: './service-list.component.html',
-  styleUrls: ['./service-list.component.scss']
+  selector: 'app-dich-vu-list',
+  templateUrl: './dich-vu-list.component.html',
+  styleUrls: ['./dich-vu-list.component.scss']
 })
-export class ServiceListComponent implements OnInit {
+export class DichVuListComponent implements OnInit {
   services: ServiceResponse[] = [];
   loading: boolean = false;
   searchValue: string = '';
-  
   
   totalRecords: number = 0;
   first: number = 0;
   rows: number = 10;
   pageSizeOptions: number[] = [5, 10, 20, 50];
   currentPage: number = 1;
-  Math = Math; 
+  Math = Math;
   
   constructor(
-    private serviceService: ServiceService,
+    private dichVuService: DichVuService, // Thay đổi serviceService sang dichVuService
     private router: Router,
     private confirmationService: ConfirmationService,
     private errorHandler: ErrorHandlerService
@@ -40,7 +39,7 @@ export class ServiceListComponent implements OnInit {
     
     console.log('Đang tải dữ liệu trang:', this.currentPage, 'với', this.rows, 'dịch vụ/trang');
     
-    this.serviceService.getAllServices(this.searchValue, this.currentPage, this.rows).subscribe({
+    this.dichVuService.getAllServices(this.searchValue, this.currentPage, this.rows).subscribe({
       next: (response: ApiResponse<ServiceResponse[]>) => {
         this.services = response.data;
         this.totalRecords = response.countItems || 0;
@@ -111,7 +110,7 @@ export class ServiceListComponent implements OnInit {
       header: 'Xác nhận xóa',
       icon: 'pi pi-exclamation-triangle',
       accept: () => {
-        this.serviceService.deleteService(service.id).subscribe({
+        this.dichVuService.deleteService(service.id).subscribe({
           next: (response) => {
             this.errorHandler.handleSuccess('Thành công', 'Xóa dịch vụ thành công');
             this.loadServices();

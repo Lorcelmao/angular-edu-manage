@@ -2,17 +2,17 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
-import { ServiceService } from '../../../services/service.service';
+import { DichVuService } from '../../../services/dich-vu.service'; // Đã thay đổi tên import
+import { ErrorHandlerService } from '../../../services/error-handler.service';
 import { ServiceRequest, ServiceUpdateRequest, ServiceResponse } from '../../../models/service';
 import { BaseResponse } from '../../../models/base-response';
-import { ErrorHandlerService } from '../../../services/error-handler.service';
 
 @Component({
-  selector: 'app-service-form',
-  templateUrl: './service-form.component.html',
-  styleUrls: ['./service-form.component.scss']
+  selector: 'app-dich-vu-form',
+  templateUrl: './dich-vu-form.component.html',
+  styleUrls: ['./dich-vu-form.component.scss']
 })
-export class ServiceFormComponent implements OnInit {
+export class DichVuFormComponent implements OnInit {
   serviceForm: FormGroup;
   loading: boolean = false;
   isEditMode: boolean = false;
@@ -22,7 +22,7 @@ export class ServiceFormComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private serviceService: ServiceService,
+    private dichVuService: DichVuService, // Đã thay đổi tên biến
     private router: Router,
     private route: ActivatedRoute,
     private messageService: MessageService,
@@ -31,9 +31,8 @@ export class ServiceFormComponent implements OnInit {
     this.serviceForm = this.fb.group({
       tenDichVu: ['', [Validators.required, Validators.minLength(2)]],
       moTa: ['', [Validators.required, Validators.minLength(10)]],
-      giaTien: ['', [Validators.required, Validators.min(0)]],
-      deliveryTime: ['', [Validators.required, Validators.min(1)]],
-      isActive: [true]
+      giaTien: [null, [Validators.required, Validators.min(0)]],
+      deliveryTime: [null, [Validators.required, Validators.min(1)]]
     });
   }
 
@@ -66,7 +65,7 @@ export class ServiceFormComponent implements OnInit {
     if (!this.serviceId) return;
     
     this.loading = true;
-    this.serviceService.getServiceById(this.serviceId).subscribe({
+    this.dichVuService.getServiceById(this.serviceId).subscribe({ // Thay đổi serviceService sang dichVuService
       next: (response: BaseResponse<ServiceResponse>) => {
         const serviceData = response.data;
         this.serviceForm.patchValue({
@@ -103,7 +102,7 @@ export class ServiceFormComponent implements OnInit {
         deliveryTime: Number(formValue.deliveryTime)
       };
       
-      this.serviceService.updateService(this.serviceId, updateRequest).subscribe({
+      this.dichVuService.updateService(this.serviceId, updateRequest).subscribe({ // Thay đổi serviceService sang dichVuService
         next: (response: BaseResponse<ServiceResponse>) => {
           this.errorHandler.handleSuccess('Thành công', 'Cập nhật dịch vụ thành công');
           this.loading = false;
@@ -124,7 +123,7 @@ export class ServiceFormComponent implements OnInit {
         deliveryTime: Number(formValue.deliveryTime)
       };
       
-      this.serviceService.createService(createRequest).subscribe({
+      this.dichVuService.createService(createRequest).subscribe({ // Thay đổi serviceService sang dichVuService
         next: (response: BaseResponse<ServiceResponse>) => {
           this.errorHandler.handleSuccess('Thành công', 'Thêm dịch vụ thành công');
           this.loading = false;
